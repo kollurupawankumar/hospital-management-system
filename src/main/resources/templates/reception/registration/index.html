@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Registration - Hospital Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        .card-counter {
+            box-shadow: 2px 2px 10px #DADADA;
+            padding: 20px 10px;
+            background-color: #fff;
+            height: 100px;
+            border-radius: 5px;
+            transition: .3s linear all;
+        }
+        .card-counter:hover {
+            box-shadow: 4px 4px 20px #DADADA;
+            transition: .3s linear all;
+        }
+        .card-counter.primary {
+            background-color: #007bff;
+            color: #FFF;
+        }
+        .card-counter.success {
+            background-color: #28a745;
+            color: #FFF;
+        }
+        .card-counter.info {
+            background-color: #17a2b8;
+            color: #FFF;
+        }
+        .card-counter.warning {
+            background-color: #ffc107;
+            color: #FFF;
+        }
+        .card-counter i {
+            font-size: 5em;
+            opacity: 0.2;
+        }
+        .card-counter .count-numbers {
+            position: absolute;
+            right: 35px;
+            top: 20px;
+            font-size: 32px;
+            display: block;
+        }
+        .card-counter .count-name {
+            position: absolute;
+            right: 35px;
+            top: 65px;
+            font-style: italic;
+            text-transform: capitalize;
+            opacity: 0.5;
+            display: block;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active text-white" href="/hospital/reception/registration">
+                                <i class="bi bi-person-plus-fill me-2"></i>
+                                Patient Registration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/appointments">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Appointments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/doctor-calendar">
+                                <i class="bi bi-calendar-week me-2"></i>
+                                Doctor Calendar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/queue">
+                                <i class="bi bi-people-fill me-2"></i>
+                                Queue Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/tokens">
+                                <i class="bi bi-ticket-perforated-fill me-2"></i>
+                                Token Generation
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/visitors">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Visitor Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/admissions">
+                                <i class="bi bi-hospital me-2"></i>
+                                Admissions & Discharge
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Patient Registration</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group me-2">
+                            <a href="/hospital/reception/registration/new" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-person-plus"></i> New Patient
+                            </a>
+                            <a href="/hospital/reception/registration/existing" class="btn btn-sm btn-outline-secondary">
+                                <i class="bi bi-person-check"></i> Existing Patient
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Alert messages -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card-counter primary">
+                            <i class="bi bi-people"></i>
+                            <span class="count-numbers" th:text="${todayCount}">0</span>
+                            <span class="count-name">Today's Registrations</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card-counter success">
+                            <i class="bi bi-calendar-check"></i>
+                            <span class="count-numbers">0</span>
+                            <span class="count-name">Appointments Today</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card-counter info">
+                            <i class="bi bi-hospital"></i>
+                            <span class="count-numbers">0</span>
+                            <span class="count-name">Admissions Today</span>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card-counter warning">
+                            <i class="bi bi-person-badge"></i>
+                            <span class="count-numbers">0</span>
+                            <span class="count-name">Visitors Today</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Registrations -->
+                <h3>Recent Registrations</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Registration #</th>
+                                <th>Patient Name</th>
+                                <th>Registration Date</th>
+                                <th>Type</th>
+                                <th>Registered By</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="registration : ${todayRegistrations}">
+                                <td th:text="${registration.registrationNumber}"></td>
+                                <td th:text="${registration.patientName}"></td>
+                                <td th:text="${#temporals.format(registration.registrationDate, 'dd-MM-yyyy HH:mm')}"></td>
+                                <td th:text="${registration.registrationType}"></td>
+                                <td th:text="${registration.registeredBy}"></td>
+                                <td>
+                                    <a th:href="@{/reception/registration/details/{id}(id=${registration.id})}" class="btn btn-sm btn-info">
+                                        <i class="bi bi-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(todayRegistrations)}">
+                                <td colspan="6" class="text-center">No registrations found for today</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Search Form -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5>Search Registrations</h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reception/registration/search}" method="get" class="row g-3">
+                            <div class="col-md-4">
+                                <label for="registrationNumber" class="form-label">Registration Number</label>
+                                <input type="text" class="form-control" id="registrationNumber" name="registrationNumber">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="patientId" class="form-label">Patient ID</label>
+                                <input type="number" class="form-control" id="patientId" name="patientId">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="type" class="form-label">Registration Type</label>
+                                <select class="form-select" id="type" name="type">
+                                    <option value="">All Types</option>
+                                    <option value="NEW_PATIENT">New Patient</option>
+                                    <option value="RETURNING_PATIENT">Returning Patient</option>
+                                    <option value="EMERGENCY">Emergency</option>
+                                    <option value="REFERRAL">Referral</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="startDate" class="form-label">Start Date</label>
+                                <input type="datetime-local" class="form-control" id="startDate" name="startDate">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endDate" class="form-label">End Date</label>
+                                <input type="datetime-local" class="form-control" id="endDate" name="endDate">
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-primary">Search</button>
+                                <button type="reset" class="btn btn-secondary">Reset</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Set default dates for search form
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date();
+            const startOfDay = new Date(today.setHours(0, 0, 0, 0));
+            const endOfDay = new Date(today.setHours(23, 59, 59, 999));
+            
+            document.getElementById('startDate').valueAsDate = startOfDay;
+            document.getElementById('endDate').valueAsDate = endOfDay;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Details - Hospital Management System</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active text-white" href="/hospital/reception/registration">
+                                <i class="bi bi-person-plus-fill me-2"></i>
+                                Patient Registration
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/appointments">
+                                <i class="bi bi-calendar-check me-2"></i>
+                                Appointments
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/doctor-calendar">
+                                <i class="bi bi-calendar-week me-2"></i>
+                                Doctor Calendar
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/queue">
+                                <i class="bi bi-people-fill me-2"></i>
+                                Queue Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/tokens">
+                                <i class="bi bi-ticket-perforated-fill me-2"></i>
+                                Token Generation
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/visitors">
+                                <i class="bi bi-person-badge me-2"></i>
+                                Visitor Management
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/hospital/reception/admissions">
+                                <i class="bi bi-hospital me-2"></i>
+                                Admissions & Discharge
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Registration Details</h1>
+                    <div class="btn-toolbar mb-2 mb-md-0">
+                        <a href="/hospital/reception/registration" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-arrow-left"></i> Back to Registrations
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Alert messages -->
+                <div th:if="${successMessage}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <span th:text="${successMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <span th:text="${errorMessage}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+
+                <!-- Registration Details -->
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Registration Information</h5>
+                        <div>
+                            <span th:if="${registration.active}" class="badge bg-success">Active</span>
+                            <span th:unless="${registration.active}" class="badge bg-danger">Inactive</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Registration Number:</strong> <span th:text="${registration.registrationNumber}"></span></p>
+                                <p><strong>Registration Date:</strong> <span th:text="${#temporals.format(registration.registrationDate, 'dd-MM-yyyy HH:mm')}"></span></p>
+                                <p><strong>Registration Type:</strong> <span th:text="${registration.registrationType}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Registered By:</strong> <span th:text="${registration.registeredBy}"></span></p>
+                                <p><strong>Status:</strong> <span th:text="${registration.active ? 'Active' : 'Inactive'}"></span></p>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <p><strong>Registration Notes:</strong></p>
+                                <p th:text="${registration.registrationNotes ?: 'No notes available'}"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patient Information -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Patient Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Patient ID:</strong> <span th:text="${registration.patientId}"></span></p>
+                                <p><strong>Patient Name:</strong> <span th:text="${registration.patientName}"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <a th:href="@{/patient/view/{id}(id=${registration.patientId})}" class="btn btn-primary">
+                                    <i class="bi bi-person"></i> View Patient Profile
+                                </a>
+                                <a th:href="@{/reception/registration/patient/{id}(id=${registration.patientId})}" class="btn btn-info">
+                                    <i class="bi bi-list-check"></i> View All Registrations
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Actions</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <a th:href="@{/reception/appointments/schedule/{patientId}(patientId=${registration.patientId})}" class="btn btn-success mb-2 w-100">
+                                    <i class="bi bi-calendar-plus"></i> Schedule Appointment
+                                </a>
+                                <a th:href="@{/reception/tokens/generate/{patientId}(patientId=${registration.patientId})}" class="btn btn-warning mb-2 w-100">
+                                    <i class="bi bi-ticket-perforated"></i> Generate Token
+                                </a>
+                            </div>
+                            <div class="col-md-6">
+                                <a th:href="@{/reception/admissions/new/{patientId}(patientId=${registration.patientId})}" class="btn btn-primary mb-2 w-100">
+                                    <i class="bi bi-hospital"></i> Admit Patient
+                                </a>
+                                <form th:if="${registration.active}" th:action="@{/reception/registration/deactivate/{id}(id=${registration.id})}" method="post">
+                                    <button type="submit" class="btn btn-danger w-100" onclick="return confirm('Are you sure you want to deactivate this registration?')">
+                                        <i class="bi bi-x-circle"></i> Deactivate Registration
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Print Options -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">Print Options</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-primary w-100" onclick="printRegistrationCard()">
+                                    <i class="bi bi-printer"></i> Print Registration Card
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-secondary w-100" onclick="printPatientID()">
+                                    <i class="bi bi-printer"></i> Print Patient ID
+                                </button>
+                            </div>
+                            <div class="col-md-4">
+                                <button class="btn btn-outline-info w-100" onclick="printReceipt()">
+                                    <i class="bi bi-printer"></i> Print Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function printRegistrationCard() {
+            alert('Printing registration card...');
+            // Implementation would connect to printer
+        }
+        
+        function printPatientID() {
+            alert('Printing patient ID card...');
+            // Implementation would connect to printer
+        }
+        
+        function printReceipt() {
+            alert('Printing receipt...');
+            // Implementation would connect to printer
+        }
+    </script>
+</body>
+</html>

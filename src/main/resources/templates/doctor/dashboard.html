@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doctor Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .card-counter {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        .card-counter:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .card-counter.primary {
+            background-color: #007bff;
+            color: #FFF;
+        }
+        .card-counter.success {
+            background-color: #28a745;
+            color: #FFF;
+        }
+        .card-counter.info {
+            background-color: #17a2b8;
+            color: #FFF;
+        }
+        .card-counter.warning {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .card-counter i {
+            font-size: 4em;
+            opacity: 0.4;
+        }
+        .card-counter .count-numbers {
+            position: absolute;
+            right: 35px;
+            top: 20px;
+            font-size: 32px;
+            display: block;
+        }
+        .card-counter .count-name {
+            position: absolute;
+            right: 35px;
+            top: 65px;
+            font-style: italic;
+            text-transform: capitalize;
+            opacity: 0.8;
+            display: block;
+        }
+        .appointment-card {
+            border-left: 4px solid #007bff;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+        .appointment-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .telemedicine-card {
+            border-left: 4px solid #17a2b8;
+        }
+        .task-card {
+            border-left: 4px solid #ffc107;
+        }
+        .task-high {
+            border-left: 4px solid #dc3545;
+        }
+        .patient-card {
+            border-left: 4px solid #28a745;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/doctor-header :: header"></div>
+    
+    <div class="container-fluid py-4">
+        <div class="row mb-4">
+            <div class="col-12">
+                <h2>Welcome, Dr. <span th:text="${doctor.firstName + ' ' + doctor.lastName}"></span></h2>
+                <p class="text-muted" th:text="${#temporals.format(#temporals.createNow(), 'EEEE, MMMM d, yyyy')}"></p>
+            </div>
+        </div>
+        
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card-counter primary position-relative">
+                    <i class="bi bi-calendar-check"></i>
+                    <span class="count-numbers" th:text="${todayAppointments.size()}">0</span>
+                    <span class="count-name">Today's Appointments</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-counter success position-relative">
+                    <i class="bi bi-people"></i>
+                    <span class="count-numbers" th:text="${recentPatients.size()}">0</span>
+                    <span class="count-name">Recent Patients</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-counter info position-relative">
+                    <i class="bi bi-camera-video"></i>
+                    <span class="count-numbers" th:text="${telemedicineAppointments.size()}">0</span>
+                    <span class="count-name">Telemedicine</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card-counter warning position-relative">
+                    <i class="bi bi-check2-square"></i>
+                    <span class="count-numbers" th:text="${pendingTasks.size()}">0</span>
+                    <span class="count-name">Pending Tasks</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Today's Appointments</h5>
+                        <a th:href="@{/doctor/appointments/{doctorId}(doctorId=${doctor.id})}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${todayAppointments.empty}" class="text-center py-3">
+                            <i class="bi bi-calendar-x text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">No appointments scheduled for today</p>
+                        </div>
+                        <div th:each="appointment : ${todayAppointments}" class="card appointment-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 th:text="${appointment.patient.firstName + ' ' + appointment.patient.lastName}">Patient Name</h6>
+                                    <p class="text-muted mb-0" th:text="${appointment.purpose}">Appointment Purpose</p>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-0 fw-bold" th:text="${#temporals.format(appointment.appointmentDate, 'hh:mm a')}">10:00 AM</p>
+                                    <span class="badge" 
+                                          th:classappend="${appointment.status.name() == 'SCHEDULED' ? 'bg-primary' : 
+                                                          appointment.status.name() == 'COMPLETED' ? 'bg-success' : 
+                                                          appointment.status.name() == 'CANCELLED' ? 'bg-danger' : 
+                                                          appointment.status.name() == 'IN_PROGRESS' ? 'bg-warning' : 'bg-secondary'}"
+                                          th:text="${appointment.status}">Status</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Telemedicine Appointments</h5>
+                        <a th:href="@{/doctor/telemedicine/{doctorId}(doctorId=${doctor.id})}" class="btn btn-sm btn-outline-info">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${telemedicineAppointments.empty}" class="text-center py-3">
+                            <i class="bi bi-camera-video-off text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">No upcoming telemedicine appointments</p>
+                        </div>
+                        <div th:each="appointment : ${telemedicineAppointments}" class="card appointment-card telemedicine-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 th:text="${appointment.patient.firstName + ' ' + appointment.patient.lastName}">Patient Name</h6>
+                                    <p class="text-muted mb-0" th:text="${appointment.purpose}">Appointment Purpose</p>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-0 fw-bold" th:text="${#temporals.format(appointment.appointmentDate, 'MMM d, hh:mm a')}">Jan 1, 10:00 AM</p>
+                                    <a th:href="${appointment.meetingLink}" class="btn btn-sm btn-info mt-1">Join Meeting</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Pending Tasks</h5>
+                        <a href="#" class="btn btn-sm btn-outline-warning">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${pendingTasks.empty}" class="text-center py-3">
+                            <i class="bi bi-check2-all text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">No pending tasks</p>
+                        </div>
+                        <div th:each="task : ${pendingTasks}" class="card task-card p-3" th:classappend="${task.priority.name() == 'HIGH' || task.priority.name() == 'URGENT' ? 'task-high' : ''}">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 th:text="${task.taskTitle}">Task Title</h6>
+                                    <p class="text-muted mb-0" th:text="${task.taskDescription}">Task Description</p>
+                                    <p class="mb-0 mt-1" th:if="${task.patient != null}">
+                                        <small>Patient: <span th:text="${task.patient.firstName + ' ' + task.patient.lastName}">Patient Name</span></small>
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <span class="badge" 
+                                          th:classappend="${task.priority.name() == 'LOW' ? 'bg-info' : 
+                                                          task.priority.name() == 'MEDIUM' ? 'bg-primary' : 
+                                                          task.priority.name() == 'HIGH' ? 'bg-warning' : 'bg-danger'}"
+                                          th:text="${task.priority}">Priority</span>
+                                    <p class="mb-0 mt-1" th:if="${task.dueDate != null}">
+                                        <small>Due: <span th:text="${#temporals.format(task.dueDate, 'MMM d, yyyy')}">Jan 1, 2023</span></small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card mb-4">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Recent Patients</h5>
+                        <a th:href="@{/doctor/patients/{doctorId}(doctorId=${doctor.id})}" class="btn btn-sm btn-outline-success">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div th:if="${recentPatients.empty}" class="text-center py-3">
+                            <i class="bi bi-people text-muted" style="font-size: 2rem;"></i>
+                            <p class="mt-2 text-muted">No recent patients</p>
+                        </div>
+                        <div th:each="patient : ${recentPatients}" class="card patient-card p-3">
+                            <div class="d-flex justify-content-between">
+                                <div>
+                                    <h6 th:text="${patient.firstName + ' ' + patient.lastName}">Patient Name</h6>
+                                    <p class="text-muted mb-0">
+                                        <span th:text="${patient.gender}">Gender</span> • 
+                                        <span th:text="${patient.age}">Age</span> years
+                                    </p>
+                                </div>
+                                <div class="text-end">
+                                    <a th:href="@{/doctor/patients/{patientId}/records(patientId=${patient.id}, doctorId=${doctor.id})}" class="btn btn-sm btn-outline-primary">View Records</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/doctor-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

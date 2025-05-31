@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stats-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+        .priority-stat {
+            border-left: 4px solid;
+            padding-left: 15px;
+        }
+        .priority-stat.stat {
+            border-color: #dc3545;
+        }
+        .priority-stat.urgent {
+            border-color: #fd7e14;
+        }
+        .priority-stat.routine {
+            border-color: #0d6efd;
+        }
+        .table-container {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .priority-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .priority-badge.stat {
+            background-color: #dc3545;
+            color: white;
+        }
+        .priority-badge.urgent {
+            background-color: #fd7e14;
+            color: white;
+        }
+        .priority-badge.routine {
+            background-color: #0d6efd;
+            color: white;
+        }
+        .chart-container {
+            height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            background-color: white;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/lab-header :: header"></div>
+    
+    <div class="container-fluid py-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>Laboratory Dashboard</h2>
+                <p class="text-muted">Overview of laboratory operations and pending tasks</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="btn-group">
+                    <a th:href="@{/laboratory/orders/new}" class="btn btn-primary">
+                        <i class="bi bi-plus-circle me-1"></i> New Lab Order
+                    </a>
+                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                        <span class="visually-hidden">Toggle Dropdown</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" th:href="@{/laboratory/tests/new}">Add New Test</a></li>
+                        <li><a class="dropdown-item" th:href="@{/laboratory/analyzers/new}">Add New Analyzer</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" th:href="@{/laboratory/reports}">Generate Reports</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="stats-card bg-primary text-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0" th:text="${pendingOrdersCount}">42</h3>
+                            <p class="mb-0">Pending Orders</p>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-clipboard-check"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card bg-warning text-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0" th:text="${pendingSamplesCount}">15</h3>
+                            <p class="mb-0">Pending Samples</p>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-droplet"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card bg-info text-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0" th:text="${pendingResultsCount}">28</h3>
+                            <p class="mb-0">Pending Results</p>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stats-card bg-success text-white p-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h3 class="mb-0" th:text="${completedTodayCount}">37</h3>
+                            <p class="mb-0">Completed Today</p>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Priority Stats -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Orders by Priority</h5>
+                        <div class="priority-stat stat mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0" th:text="${statOrdersCount}">5</h4>
+                                    <p class="mb-0 text-muted">STAT Orders</p>
+                                </div>
+                                <span class="priority-badge stat">STAT</span>
+                            </div>
+                        </div>
+                        <div class="priority-stat urgent mb-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0" th:text="${urgentOrdersCount}">12</h4>
+                                    <p class="mb-0 text-muted">Urgent Orders</p>
+                                </div>
+                                <span class="priority-badge urgent">URGENT</span>
+                            </div>
+                        </div>
+                        <div class="priority-stat routine">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h4 class="mb-0" th:text="${routineOrdersCount}">25</h4>
+                                    <p class="mb-0 text-muted">Routine Orders</p>
+                                </div>
+                                <span class="priority-badge routine">ROUTINE</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Critical Results</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Patient</th>
+                                        <th>Test</th>
+                                        <th>Result</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="result : ${criticalResults}" th:if="${!criticalResults.empty}">
+                                        <td>
+                                            <a th:href="@{/patients/{id}(id=${result.labOrder.patient.id})}" 
+                                               th:text="${result.labOrder.patient.firstName + ' ' + result.labOrder.patient.lastName}">
+                                                John Doe
+                                            </a>
+                                        </td>
+                                        <td th:text="${result.criticalParameter}">Glucose</td>
+                                        <td class="text-danger fw-bold" th:text="${result.criticalValue}">450 mg/dL</td>
+                                        <td>
+                                            <span class="badge bg-danger" th:if="${result.criticalInformedDate == null}">Not Informed</span>
+                                            <span class="badge bg-success" th:if="${result.criticalInformedDate != null}">Informed</span>
+                                        </td>
+                                        <td>
+                                            <a th:href="@{/laboratory/results/{id}(id=${result.id})}" class="btn btn-sm btn-outline-primary">
+                                                <i class="bi bi-eye"></i>
+                                            </a>
+                                            <a th:href="@{/laboratory/results/{id}/inform(id=${result.id})}" 
+                                               class="btn btn-sm btn-outline-danger"
+                                               th:if="${result.criticalInformedDate == null}">
+                                                <i class="bi bi-telephone"></i> Inform
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${criticalResults.empty}">
+                                        <td colspan="5" class="text-center">No critical results found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Pending Orders Table -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Pending Orders</h5>
+                        <a th:href="@{/laboratory/orders}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Tests</th>
+                                        <th>Priority</th>
+                                        <th>Status</th>
+                                        <th>Order Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${pendingOrders}" th:if="${!pendingOrders.empty}">
+                                        <td th:text="${order.orderNumber}">LAB-20230501-1234</td>
+                                        <td>
+                                            <a th:href="@{/patients/{id}(id=${order.patient.id})}" 
+                                               th:text="${order.patient.firstName + ' ' + order.patient.lastName}">
+                                                John Doe
+                                            </a>
+                                        </td>
+                                        <td th:text="${order.doctor.firstName + ' ' + order.doctor.lastName}">Dr. Smith</td>
+                                        <td>
+                                            <span th:text="${order.testsCount}">3</span> tests
+                                            <a href="#" data-bs-toggle="tooltip" data-bs-placement="top" 
+                                               th:title="${order.testsNames}">
+                                                <i class="bi bi-info-circle"></i>
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <span th:class="${'badge priority-badge ' + order.priority.toString().toLowerCase()}" 
+                                                  th:text="${order.priority}">ROUTINE</span>
+                                        </td>
+                                        <td>
+                                            <span th:class="${'badge ' + 
+                                                          (order.status.name() == 'ORDERED' ? 'bg-primary' : 
+                                                          (order.status.name() == 'SAMPLE_COLLECTED' ? 'bg-info' : 
+                                                          (order.status.name() == 'IN_PROCESS' ? 'bg-warning' : 
+                                                          (order.status.name() == 'COMPLETED' ? 'bg-success' : 
+                                                          (order.status.name() == 'CANCELLED' ? 'bg-secondary' : 
+                                                          (order.status.name() == 'REJECTED' ? 'bg-danger' : 'bg-secondary'))))))}">
+                                                <span th:text="${order.status}">ORDERED</span>
+                                            </span>
+                                        </td>
+                                        <td th:text="${#temporals.format(order.orderDate, 'MMM d, yyyy HH:mm')}">May 1, 2023 10:30</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a th:href="@{/laboratory/orders/{id}(id=${order.id})}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a th:href="@{/laboratory/samples/collect/{orderId}(orderId=${order.id})}" 
+                                                   class="btn btn-sm btn-outline-info"
+                                                   th:if="${order.status.name() == 'ORDERED'}">
+                                                    <i class="bi bi-droplet"></i> Collect
+                                                </a>
+                                                <a th:href="@{/laboratory/samples/receive/{orderId}(orderId=${order.id})}" 
+                                                   class="btn btn-sm btn-outline-warning"
+                                                   th:if="${order.status.name() == 'SAMPLE_COLLECTED'}">
+                                                    <i class="bi bi-box"></i> Receive
+                                                </a>
+                                                <a th:href="@{/laboratory/results/enter/{orderId}(orderId=${order.id})}" 
+                                                   class="btn btn-sm btn-outline-success"
+                                                   th:if="${order.status.name() == 'IN_PROCESS'}">
+                                                    <i class="bi bi-pencil"></i> Enter Results
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${pendingOrders.empty}">
+                                        <td colspan="8" class="text-center">No pending orders found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Tests by Department</h5>
+                    <canvas id="departmentChart"></canvas>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="chart-container">
+                    <h5>Daily Test Volume</h5>
+                    <canvas id="dailyVolumeChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analyzer Status -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">Analyzer Status</h5>
+                        <a th:href="@{/laboratory/analyzers}" class="btn btn-sm btn-outline-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Analyzer</th>
+                                        <th>Model</th>
+                                        <th>Location</th>
+                                        <th>Status</th>
+                                        <th>Last Maintenance</th>
+                                        <th>Next Maintenance</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="analyzer : ${analyzers}" th:if="${!analyzers.empty}">
+                                        <td th:text="${analyzer.analyzerName}">Hematology Analyzer</td>
+                                        <td th:text="${analyzer.manufacturer + ' ' + analyzer.model}">Sysmex XN-1000</td>
+                                        <td th:text="${analyzer.location}">Lab Room 101</td>
+                                        <td>
+                                            <span th:class="${'badge ' + 
+                                                          (analyzer.status.name() == 'ACTIVE' ? 'bg-success' : 
+                                                          (analyzer.status.name() == 'MAINTENANCE' ? 'bg-warning' : 
+                                                          (analyzer.status.name() == 'CALIBRATION' ? 'bg-info' : 
+                                                          (analyzer.status.name() == 'INACTIVE' ? 'bg-secondary' : 
+                                                          (analyzer.status.name() == 'OUT_OF_ORDER' ? 'bg-danger' : 'bg-secondary')))))}">
+                                                <span th:text="${analyzer.status}">ACTIVE</span>
+                                            </span>
+                                        </td>
+                                        <td th:text="${analyzer.lastMaintenanceDate != null ? #temporals.format(analyzer.lastMaintenanceDate, 'MMM d, yyyy') : 'N/A'}">Apr 15, 2023</td>
+                                        <td th:text="${analyzer.nextMaintenanceDate != null ? #temporals.format(analyzer.nextMaintenanceDate, 'MMM d, yyyy') : 'N/A'}">Jul 15, 2023</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                <a th:href="@{/laboratory/analyzers/{id}(id=${analyzer.id})}" class="btn btn-sm btn-outline-primary">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                                <a th:href="@{/laboratory/analyzers/{id}/maintenance(id=${analyzer.id})}" 
+                                                   class="btn btn-sm btn-outline-warning"
+                                                   th:if="${analyzer.status.name() == 'ACTIVE'}">
+                                                    <i class="bi bi-tools"></i>
+                                                </a>
+                                                <a th:href="@{/laboratory/analyzers/{id}/calibration(id=${analyzer.id})}" 
+                                                   class="btn btn-sm btn-outline-info"
+                                                   th:if="${analyzer.status.name() == 'ACTIVE'}">
+                                                    <i class="bi bi-sliders"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${analyzers.empty}">
+                                        <td colspan="7" class="text-center">No analyzers found</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/lab-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize tooltips
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl)
+            });
+            
+            // Department Chart
+            var departmentCtx = document.getElementById('departmentChart').getContext('2d');
+            var departmentChart = new Chart(departmentCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Hematology', 'Biochemistry', 'Microbiology', 'Serology', 'Pathology'],
+                    datasets: [{
+                        data: [35, 25, 15, 15, 10],
+                        backgroundColor: [
+                            '#0d6efd',
+                            '#6f42c1',
+                            '#d63384',
+                            '#fd7e14',
+                            '#20c997'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+            
+            // Daily Volume Chart
+            var dailyVolumeCtx = document.getElementById('dailyVolumeChart').getContext('2d');
+            var dailyVolumeChart = new Chart(dailyVolumeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Tests Performed',
+                        data: [65, 59, 80, 81, 56, 40, 30],
+                        backgroundColor: '#0d6efd'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

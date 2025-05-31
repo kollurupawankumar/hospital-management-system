@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layout/main}">
+<head>
+    <title>Dashboard</title>
+    <style>
+        .feature-card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            color: #0d6efd;
+        }
+    </style>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <h4 class="alert-heading">Welcome to Hospital Management System!</h4>
+                    <p>Select a module below to get started with managing hospital operations.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            <!-- Patient Management -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-injured feature-icon"></i>
+                        <h4>Patient Management</h4>
+                        <p>Register new patients, update patient information, and view patient records.</p>
+                        <a th:href="@{/patients}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Patients
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Doctor Management -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-md feature-icon"></i>
+                        <h4>Doctor Management</h4>
+                        <p>Manage doctor profiles, specializations, schedules, and appointments.</p>
+                        <a th:href="@{/doctor/dashboard}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Doctors
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Appointment Scheduling -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-calendar-check feature-icon"></i>
+                        <h4>Appointments</h4>
+                        <p>Schedule, reschedule, or cancel appointments for patients with doctors.</p>
+                        <a th:href="@{/doctor/appointments}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Appointments
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Laboratory Management -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-flask feature-icon"></i>
+                        <h4>Laboratory</h4>
+                        <p>Manage lab tests, track samples, and generate detailed reports.</p>
+                        <a th:href="@{/doctor/lab-order-form}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Laboratory
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Prescription Management -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-prescription feature-icon"></i>
+                        <h4>Prescriptions</h4>
+                        <p>Create and manage prescriptions for patients with detailed medication instructions.</p>
+                        <a th:href="@{/doctor/prescription-form}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Prescriptions
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Inpatient Care -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-procedures feature-icon"></i>
+                        <h4>Inpatient Care</h4>
+                        <p>Manage inpatient admissions, room assignments, and treatment plans.</p>
+                        <div class="d-grid gap-2">
+                            <a th:href="@{/inpatient/admissions}" class="btn btn-primary mt-3">
+                                <i class="fas fa-arrow-right me-2"></i> Inpatient Admissions
+                            </a>
+                            <a th:href="@{/inpatient/beds}" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-bed me-2"></i> Bed Management
+                            </a>
+                            <a th:href="@{/doctor/patient-inpatient-care}" class="btn btn-outline-primary mt-2">
+                                <i class="fas fa-user-md me-2"></i> Patient Care
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Medical Records -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-file-medical feature-icon"></i>
+                        <h4>Medical Records</h4>
+                        <p>Access and update comprehensive medical records for all patients.</p>
+                        <a th:href="@{/records/list}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Medical Records
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Patient Registration -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-plus feature-icon"></i>
+                        <h4>Patient Registration</h4>
+                        <p>Register new patients and collect their personal and medical information.</p>
+                        <a th:href="@{/reception/registration}" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Registration
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- User Profile -->
+            <div class="col-md-4">
+                <div class="card feature-card h-100">
+                    <div class="card-body text-center p-4">
+                        <i class="fas fa-user-cog feature-icon"></i>
+                        <h4>User Profile</h4>
+                        <p>View and update your user profile and account settings.</p>
+                        <a href="#" class="btn btn-primary mt-3">
+                            <i class="fas fa-arrow-right me-2"></i> Go to Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

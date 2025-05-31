@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/main}">
+<head>
+    <title>Inventory Dashboard</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <h1 class="h3 mb-4 text-gray-800">Inventory Dashboard</h1>
+
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Low Stock Items Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-warning shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+                                    Low Stock Items</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${lowStockItems.size()}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiring Items Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-info shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
+                                    Expiring Soon</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${expiringItems.size()}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expired Items Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Expired Items</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${expiredItems.size()}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Orders Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-primary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                    Pending Orders</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${pendingOrders.size()}">0</div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Low Stock Items Table -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Low Stock Items</h6>
+                        <a href="/inventory/items" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Item Code</th>
+                                        <th>Name</th>
+                                        <th>Available</th>
+                                        <th>Reorder Level</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="item : ${lowStockItems}" th:if="${itemStat.index < 5}">
+                                        <td th:text="${item.itemCode}">ITM-001</td>
+                                        <td th:text="${item.name}">Item Name</td>
+                                        <td>0</td>
+                                        <td th:text="${item.reorderLevel}">10</td>
+                                    </tr>
+                                    <tr th:if="${lowStockItems.empty}">
+                                        <td colspan="4" class="text-center">No low stock items</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Expiring Items Table -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Expiring Soon</h6>
+                        <a href="/inventory/items" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Item</th>
+                                        <th>Batch</th>
+                                        <th>Expiry Date</th>
+                                        <th>Quantity</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="inventory : ${expiringItems}" th:if="${inventoryStat.index < 5}">
+                                        <td th:text="${inventory.item.name}">Item Name</td>
+                                        <td th:text="${inventory.batchNumber}">BATCH001</td>
+                                        <td th:text="${#temporals.format(inventory.expiryDate, 'dd-MM-yyyy')}">01-01-2023</td>
+                                        <td th:text="${inventory.quantityAvailable}">10</td>
+                                    </tr>
+                                    <tr th:if="${expiringItems.empty}">
+                                        <td colspan="4" class="text-center">No expiring items</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Pending Orders Table -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Pending Orders</h6>
+                        <a href="/inventory/purchase-orders" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>PO Number</th>
+                                        <th>Supplier</th>
+                                        <th>Status</th>
+                                        <th>Expected Delivery</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="order : ${pendingOrders}" th:if="${orderStat.index < 5}">
+                                        <td th:text="${order.poNumber}">PO-001</td>
+                                        <td th:text="${order.supplier.name}">Supplier Name</td>
+                                        <td th:text="${order.status}">ORDERED</td>
+                                        <td th:text="${#temporals.format(order.expectedDeliveryDate, 'dd-MM-yyyy')}">01-01-2023</td>
+                                    </tr>
+                                    <tr th:if="${pendingOrders.empty}">
+                                        <td colspan="4" class="text-center">No pending orders</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assets Needing Maintenance Table -->
+            <div class="col-lg-6 mb-4">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Assets Needing Maintenance</h6>
+                        <a href="/inventory/assets" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-bordered" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>Asset Code</th>
+                                        <th>Name</th>
+                                        <th>Location</th>
+                                        <th>Next Maintenance</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="asset : ${assetsNeedingMaintenance}" th:if="${assetStat.index < 5}">
+                                        <td th:text="${asset.assetCode}">AST-001</td>
+                                        <td th:text="${asset.name}">Asset Name</td>
+                                        <td th:text="${asset.location}">Location</td>
+                                        <td th:text="${#temporals.format(asset.nextMaintenanceDate, 'dd-MM-yyyy')}">01-01-2023</td>
+                                    </tr>
+                                    <tr th:if="${assetsNeedingMaintenance.empty}">
+                                        <td colspan="4" class="text-center">No assets needing maintenance</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discharge Patient</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .form-section {
+            border-left: 4px solid #dc3545;
+            padding-left: 15px;
+            margin-bottom: 30px;
+        }
+        .patient-info {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/doctor-header :: header"></div>
+    
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/doctor/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/inpatient/admissions}">Inpatient Admissions</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/inpatient/admissions/{id}(id=${admission.id})}" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">Patient Name</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Discharge</li>
+                    </ol>
+                </nav>
+                <h2>Discharge Patient</h2>
+                <p class="text-muted" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName + ' - Admission #: ' + admission.admissionNumber}">John Doe - Admission #: ADM12345</p>
+            </div>
+        </div>
+        
+        <div class="patient-info">
+            <div class="row">
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted">Patient</p>
+                    <p class="mb-0 fw-medium" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">John Doe</p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted">Patient ID</p>
+                    <p class="mb-0 fw-medium" th:text="${admission.patient.patientId}">P12345</p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted">Admission Date</p>
+                    <p class="mb-0 fw-medium" th:text="${#temporals.format(admission.admissionDate, 'MMM d, yyyy')}">Jan 1, 2023</p>
+                </div>
+                <div class="col-md-3">
+                    <p class="mb-1 text-muted">Ward/Room/Bed</p>
+                    <p class="mb-0 fw-medium" th:text="${admission.ward + ' - ' + admission.roomNumber + '/' + admission.bedNumber}">Cardiology - 301/A</p>
+                </div>
+            </div>
+        </div>
+        
+        <form th:action="@{/inpatient/admissions/{id}/discharge(id=${admission.id})}" th:object="${dischargeForm}" method="post">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <div class="form-section">
+                        <h4 class="mb-3">Discharge Information</h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="dischargeDate" class="form-label">Discharge Date and Time</label>
+                                <input type="datetime-local" class="form-control" id="dischargeDate" th:field="*{dischargeDate}" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dischargeType" class="form-label">Discharge Type</label>
+                                <select class="form-select" id="dischargeType" th:field="*{dischargeType}" required>
+                                    <option value="">-- Select Type --</option>
+                                    <option value="REGULAR">Regular</option>
+                                    <option value="AGAINST_MEDICAL_ADVICE">Against Medical Advice</option>
+                                    <option value="TRANSFER">Transfer to Another Facility</option>
+                                    <option value="DECEASED">Deceased</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="dischargeDiagnosis" class="form-label">Discharge Diagnosis</label>
+                                <textarea class="form-control" id="dischargeDiagnosis" rows="3" th:field="*{dischargeDiagnosis}" required></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4 class="mb-3">Discharge Summary</h4>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="dischargeSummary" class="form-label">Summary</label>
+                                <textarea class="form-control" id="dischargeSummary" rows="5" th:field="*{dischargeSummary}" required></textarea>
+                                <small class="text-muted">Include a brief summary of the hospital stay, procedures performed, and patient's condition at discharge.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="dischargeNotes" class="form-label">Additional Notes</label>
+                                <textarea class="form-control" id="dischargeNotes" rows="3" th:field="*{dischargeNotes}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4 class="mb-3">Discharge Instructions</h4>
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <label for="medicationInstructions" class="form-label">Medication Instructions</label>
+                                <textarea class="form-control" id="medicationInstructions" rows="3" th:field="*{medicationInstructions}" required></textarea>
+                                <small class="text-muted">Include details about medications, dosage, frequency, and duration.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="activityInstructions" class="form-label">Activity Instructions</label>
+                                <textarea class="form-control" id="activityInstructions" rows="3" th:field="*{activityInstructions}" required></textarea>
+                                <small class="text-muted">Include any restrictions or recommendations for physical activity.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="dietInstructions" class="form-label">Diet Instructions</label>
+                                <textarea class="form-control" id="dietInstructions" rows="3" th:field="*{dietInstructions}" required></textarea>
+                                <small class="text-muted">Include dietary recommendations and restrictions.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="followUpInstructions" class="form-label">Follow-up Instructions</label>
+                                <textarea class="form-control" id="followUpInstructions" rows="3" th:field="*{followUpInstructions}" required></textarea>
+                                <small class="text-muted">Include details about follow-up appointments, tests, or procedures.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="specialInstructions" class="form-label">Special Instructions</label>
+                                <textarea class="form-control" id="specialInstructions" rows="3" th:field="*{specialInstructions}"></textarea>
+                                <small class="text-muted">Include any additional instructions or precautions.</small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <h4 class="mb-3">Discharge Disposition</h4>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="dischargeDisposition" class="form-label">Disposition</label>
+                                <select class="form-select" id="dischargeDisposition" th:field="*{dischargeDisposition}" required>
+                                    <option value="">-- Select Disposition --</option>
+                                    <option value="HOME">Home</option>
+                                    <option value="SKILLED_NURSING_FACILITY">Skilled Nursing Facility</option>
+                                    <option value="REHABILITATION_FACILITY">Rehabilitation Facility</option>
+                                    <option value="LONG_TERM_CARE">Long-term Care Facility</option>
+                                    <option value="HOSPICE">Hospice</option>
+                                    <option value="OTHER_HOSPITAL">Other Hospital</option>
+                                    <option value="OTHER">Other</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="dispositionLocation" class="form-label">Disposition Location</label>
+                                <input type="text" class="form-control" id="dispositionLocation" th:field="*{dispositionLocation}">
+                                <small class="text-muted">If applicable, specify the name of the facility.</small>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="dispositionNotes" class="form-label">Disposition Notes</label>
+                                <textarea class="form-control" id="dispositionNotes" rows="3" th:field="*{dispositionNotes}"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="d-flex justify-content-between">
+                        <a th:href="@{/inpatient/admissions/{id}(id=${admission.id})}" class="btn btn-outline-secondary">Cancel</a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-box-arrow-right me-1"></i> Discharge Patient
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    
+    <div th:replace="fragments/doctor-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

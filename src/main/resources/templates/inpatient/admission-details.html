@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admission Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .patient-info-card {
+            border-left: 4px solid #28a745;
+        }
+        .admission-info-card {
+            border-left: 4px solid #007bff;
+        }
+        .discharge-info-card {
+            border-left: 4px solid #dc3545;
+        }
+        .nav-pills .nav-link.active {
+            background-color: #007bff;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #dee2e6;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #fff;
+            border: 2px solid #007bff;
+        }
+        .timeline-date {
+            font-size: 0.8rem;
+            color: #6c757d;
+        }
+        .vital-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .vital-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .vital-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+        .vital-value {
+            font-size: 1.5rem;
+            font-weight: 500;
+        }
+        .vital-label {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .note-card {
+            border-left: 4px solid #6c757d;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+        .note-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .note-card.clinical-note {
+            border-left-color: #007bff;
+        }
+        .note-card.nursing-note {
+            border-left-color: #28a745;
+        }
+        .note-card.diet-note {
+            border-left-color: #fd7e14;
+        }
+        .action-buttons .btn {
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/doctor-header :: header"></div>
+    
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/doctor/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item"><a th:href="@{/inpatient/admissions}">Inpatient Admissions</a></li>
+                        <li class="breadcrumb-item active" aria-current="page" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">Patient Name</li>
+                    </ol>
+                </nav>
+                <div class="d-flex align-items-center">
+                    <h2 class="mb-0 me-3">Admission Details</h2>
+                    <span th:class="${'badge status-badge ' + 
+                                    (admission.admissionStatus.name() == 'ADMITTED' ? 'bg-success' : 
+                                    (admission.admissionStatus.name() == 'PENDING' ? 'bg-warning' : 
+                                    (admission.admissionStatus.name() == 'DISCHARGED' ? 'bg-info' : 
+                                    (admission.admissionStatus.name() == 'CANCELLED' ? 'bg-danger' : 
+                                    (admission.admissionStatus.name() == 'TRANSFERRED' ? 'bg-primary' : 'bg-secondary')))))}">
+                        <i th:class="${'bi ' + 
+                                    (admission.admissionStatus.name() == 'ADMITTED' ? 'bi-check-circle' : 
+                                    (admission.admissionStatus.name() == 'PENDING' ? 'bi-hourglass' : 
+                                    (admission.admissionStatus.name() == 'DISCHARGED' ? 'bi-box-arrow-right' : 
+                                    (admission.admissionStatus.name() == 'CANCELLED' ? 'bi-x-circle' : 
+                                    (admission.admissionStatus.name() == 'TRANSFERRED' ? 'bi-arrow-left-right' : 'bi-question-circle')))))}"></i>
+                        <span th:text="${admission.admissionStatus}">ADMITTED</span>
+                    </span>
+                </div>
+                <p class="text-muted" th:text="${'Admission #: ' + admission.admissionNumber}">Admission #: ADM12345</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <div class="action-buttons">
+                    <div class="dropdown d-inline-block" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                        <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-plus-circle me-1"></i> Add
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" th:href="@{/inpatient/clinical-notes/new(admissionId=${admission.id})}">
+                                <i class="bi bi-journal-medical me-2"></i>Clinical Note
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/inpatient/vital-signs/new(admissionId=${admission.id})}">
+                                <i class="bi bi-heart-pulse me-2"></i>Vital Signs
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/inpatient/diet-orders/new(admissionId=${admission.id})}">
+                                <i class="bi bi-cup-hot me-2"></i>Diet Order
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/inpatient/nursing-instructions/new(admissionId=${admission.id})}">
+                                <i class="bi bi-clipboard-check me-2"></i>Nursing Instruction
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/doctor/prescriptions/new(patientId=${admission.patient.id})}">
+                                <i class="bi bi-file-earmark-medical me-2"></i>Prescription
+                            </a></li>
+                            <li><a class="dropdown-item" th:href="@{/doctor/lab-orders/new(patientId=${admission.patient.id})}">
+                                <i class="bi bi-flask me-2"></i>Lab Order
+                            </a></li>
+                        </ul>
+                    </div>
+                    
+                    <a th:href="@{/inpatient/admissions/{id}/edit(id=${admission.id})}" class="btn btn-outline-primary" th:if="${admission.admissionStatus.name() == 'PENDING'}">
+                        <i class="bi bi-pencil me-1"></i> Edit
+                    </a>
+                    
+                    <a th:href="@{/inpatient/admissions/{id}/discharge(id=${admission.id})}" class="btn btn-outline-danger" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                        <i class="bi bi-box-arrow-right me-1"></i> Discharge
+                    </a>
+                    
+                    <a th:href="@{/inpatient/admissions/{id}/transfer(id=${admission.id})}" class="btn btn-outline-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                        <i class="bi bi-arrow-left-right me-1"></i> Transfer
+                    </a>
+                    
+                    <a th:href="@{/inpatient/admissions/{id}/print(id=${admission.id})}" class="btn btn-outline-secondary" target="_blank">
+                        <i class="bi bi-printer me-1"></i> Print
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4">
+                <div class="card patient-info-card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Patient Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <img th:if="${admission.patient.profileImage != null}" th:src="${admission.patient.profileImage}" alt="Patient" class="rounded-circle me-3" style="width: 64px; height: 64px; object-fit: cover;">
+                            <img th:unless="${admission.patient.profileImage != null}" src="https://via.placeholder.com/64x64" alt="Patient" class="rounded-circle me-3">
+                            <div>
+                                <h5 class="mb-0" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">Patient Name</h5>
+                                <p class="text-muted mb-0" th:text="${'ID: ' + admission.patient.patientId}">ID: P12345</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Gender</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.patient.gender}">Male</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Age</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.patient.age + ' years'}">35 years</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Date of Birth</p>
+                                <p class="mb-0 fw-medium" th:text="${#temporals.format(admission.patient.dateOfBirth, 'MMM d, yyyy')}">Jan 1, 1988</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Blood Group</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.patient.bloodGroup}">O+</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <h6>Allergies</h6>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li th:if="${admission.patient.allergies != null && !admission.patient.allergies.isEmpty()}" 
+                                th:each="allergy : ${#strings.arraySplit(admission.patient.allergies, ',')}" 
+                                class="list-group-item px-0 py-1 border-0">
+                                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                                <span th:text="${allergy.trim()}">Allergy</span>
+                            </li>
+                            <li th:if="${admission.patient.allergies == null || admission.patient.allergies.isEmpty()}" class="list-group-item px-0 py-1 border-0 text-muted">
+                                No known allergies
+                            </li>
+                        </ul>
+                        
+                        <h6>Chronic Conditions</h6>
+                        <ul class="list-group list-group-flush">
+                            <li th:if="${admission.patient.chronicConditions != null && !admission.patient.chronicConditions.isEmpty()}" 
+                                th:each="condition : ${#strings.arraySplit(admission.patient.chronicConditions, ',')}" 
+                                class="list-group-item px-0 py-1 border-0">
+                                <i class="bi bi-heart-pulse-fill text-warning me-2"></i>
+                                <span th:text="${condition.trim()}">Condition</span>
+                            </li>
+                            <li th:if="${admission.patient.chronicConditions == null || admission.patient.chronicConditions.isEmpty()}" class="list-group-item px-0 py-1 border-0 text-muted">
+                                No chronic conditions
+                            </li>
+                        </ul>
+                        
+                        <div class="mt-3">
+                            <a th:href="@{/patients/{id}(id=${admission.patient.id})}" class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-person me-1"></i> View Full Profile
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card admission-info-card mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Admission Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Admission Date</p>
+                                <p class="mb-0 fw-medium" th:text="${#temporals.format(admission.admissionDate, 'MMM d, yyyy')}">Jan 1, 2023</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Admission Type</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.admissionType}">ELECTIVE</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-2">
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Ward</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.ward}">Cardiology</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Room/Bed</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.roomNumber + '/' + admission.bedNumber}">301/A</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Admitting Doctor</p>
+                                <p class="mb-0 fw-medium" th:text="${'Dr. ' + admission.admittingDoctor.firstName + ' ' + admission.admittingDoctor.lastName}">Dr. Jane Smith</p>
+                            </div>
+                            <div class="col-6">
+                                <p class="mb-0 text-muted">Assigned Nurse</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.assignedNurse != null ? admission.assignedNurse.firstName + ' ' + admission.assignedNurse.lastName : 'Not assigned'}">Mary Johnson</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Expected Discharge</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.expectedDischargeDate != null ? #temporals.format(admission.expectedDischargeDate, 'MMM d, yyyy') : 'Not specified'}">Jan 10, 2023</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Admission Diagnosis</p>
+                                <p class="mb-0 fw-medium" th:text="${admission.admissionDiagnosis}">Acute Myocardial Infarction</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Admission Reason</p>
+                                <p class="mb-0" th:text="${admission.admissionReason}">Patient presented with chest pain and shortness of breath.</p>
+                            </div>
+                        </div>
+                        
+                        <hr th:if="${admission.admissionNotes != null && !admission.admissionNotes.isEmpty()}">
+                        
+                        <div class="row" th:if="${admission.admissionNotes != null && !admission.admissionNotes.isEmpty()}">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Admission Notes</p>
+                                <p class="mb-0" th:text="${admission.admissionNotes}">Additional notes about the admission.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card discharge-info-card mb-4" th:if="${admission.admissionStatus.name() == 'DISCHARGED'}">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">Discharge Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Discharge Date</p>
+                                <p class="mb-0 fw-medium" th:text="${#temporals.format(admission.actualDischargeDate, 'MMM d, yyyy')}">Jan 10, 2023</p>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row mb-3" th:if="${admission.dischargeSummary != null && !admission.dischargeSummary.isEmpty()}">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Discharge Summary</p>
+                                <p class="mb-0" th:text="${admission.dischargeSummary}">Patient has recovered well and is ready for discharge.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row" th:if="${admission.dischargeInstructions != null && !admission.dischargeInstructions.isEmpty()}">
+                            <div class="col-12">
+                                <p class="mb-0 text-muted">Discharge Instructions</p>
+                                <p class="mb-0" th:text="${admission.dischargeInstructions}">Follow up with cardiologist in 2 weeks. Continue medications as prescribed.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mt-3" th:if="${admission.dischargeSummaryDoc != null}">
+                            <div class="col-12">
+                                <a th:href="@{/inpatient/discharge-summary/{id}(id=${admission.dischargeSummaryDoc.id})}" class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-file-earmark-text me-1"></i> View Full Discharge Summary
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-8">
+                <ul class="nav nav-pills mb-3" id="admissionTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="notes-tab" data-bs-toggle="tab" data-bs-target="#notes" type="button" role="tab" aria-controls="notes" aria-selected="true">
+                            <i class="bi bi-journal-text me-1"></i> Notes
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="vitals-tab" data-bs-toggle="tab" data-bs-target="#vitals" type="button" role="tab" aria-controls="vitals" aria-selected="false">
+                            <i class="bi bi-heart-pulse me-1"></i> Vitals
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="diet-tab" data-bs-toggle="tab" data-bs-target="#diet" type="button" role="tab" aria-controls="diet" aria-selected="false">
+                            <i class="bi bi-cup-hot me-1"></i> Diet Orders
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="nursing-tab" data-bs-toggle="tab" data-bs-target="#nursing" type="button" role="tab" aria-controls="nursing" aria-selected="false">
+                            <i class="bi bi-clipboard-check me-1"></i> Nursing
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="transfers-tab" data-bs-toggle="tab" data-bs-target="#transfers" type="button" role="tab" aria-controls="transfers" aria-selected="false">
+                            <i class="bi bi-arrow-left-right me-1"></i> Transfers
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="admissionTabsContent">
+                    <!-- Notes Tab -->
+                    <div class="tab-pane fade show active" id="notes" role="tabpanel" aria-labelledby="notes-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Clinical Notes</h5>
+                                    <a th:href="@{/inpatient/clinical-notes/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Note
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.clinicalNotes)}">
+                                    <i class="bi bi-info-circle me-2"></i> No clinical notes have been added yet.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.clinicalNotes)}">
+                                    <div class="timeline-item" th:each="note : ${admission.clinicalNotes}">
+                                        <div class="card note-card clinical-note">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${note.noteType}">PROGRESS_NOTE</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(note.noteDate, 'MMM d, yyyy h:mm a')}">Jan 2, 2023 2:30 PM</span>
+                                                </div>
+                                                <p class="card-text" th:text="${note.noteContent}">Patient is showing improvement in symptoms. Vital signs are stable.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Dr. ' + note.doctor.firstName + ' ' + note.doctor.lastName}">Dr. Jane Smith</small>
+                                                    <a th:href="@{/inpatient/clinical-notes/{id}(id=${note.id})}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i> View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-4">
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Inpatient Notes</h5>
+                                    <a th:href="@{/doctor/inpatient-care/notes/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Note
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.inpatientNotes)}">
+                                    <i class="bi bi-info-circle me-2"></i> No inpatient notes have been added yet.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.inpatientNotes)}">
+                                    <div class="timeline-item" th:each="note : ${admission.inpatientNotes}">
+                                        <div class="card note-card">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${note.noteType}">PROGRESS_NOTE</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(note.noteDate, 'MMM d, yyyy h:mm a')}">Jan 2, 2023 2:30 PM</span>
+                                                </div>
+                                                <p class="card-text" th:text="${note.noteContent}">Patient is showing improvement in symptoms. Vital signs are stable.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Dr. ' + note.doctor.firstName + ' ' + note.doctor.lastName}">Dr. Jane Smith</small>
+                                                    <a th:href="@{/doctor/inpatient-care/notes/{id}(id=${note.id})}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i> View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr class="my-4">
+                                
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Round Notes</h5>
+                                    <a th:href="@{/doctor/inpatient-care/rounds/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Round Note
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.roundNotes)}">
+                                    <i class="bi bi-info-circle me-2"></i> No round notes have been added yet.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.roundNotes)}">
+                                    <div class="timeline-item" th:each="note : ${admission.roundNotes}">
+                                        <div class="card note-card">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0">Round Note</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(note.roundDate, 'MMM d, yyyy h:mm a')}">Jan 2, 2023 9:30 AM</span>
+                                                </div>
+                                                <p class="card-text" th:text="${note.findings}">Patient is showing improvement in symptoms. Vital signs are stable.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Dr. ' + note.doctor.firstName + ' ' + note.doctor.lastName}">Dr. Jane Smith</small>
+                                                    <a th:href="@{/doctor/inpatient-care/rounds/{id}(id=${note.id})}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i> View
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Vitals Tab -->
+                    <div class="tab-pane fade" id="vitals" role="tabpanel" aria-labelledby="vitals-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Vital Signs</h5>
+                                    <a th:href="@{/inpatient/vital-signs/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Vitals
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.vitalSigns)}">
+                                    <i class="bi bi-info-circle me-2"></i> No vital signs have been recorded yet.
+                                </div>
+                                
+                                <div th:unless="${#lists.isEmpty(admission.vitalSigns)}">
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.bloodPressure}">120/80</div>
+                                                        <div class="vital-label">Blood Pressure</div>
+                                                    </div>
+                                                    <div class="vital-icon text-primary">
+                                                        <i class="bi bi-heart-pulse"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.heartRate + ' bpm'}">72 bpm</div>
+                                                        <div class="vital-label">Heart Rate</div>
+                                                    </div>
+                                                    <div class="vital-icon text-danger">
+                                                        <i class="bi bi-heart"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.temperature + ' °C'}">37.2 °C</div>
+                                                        <div class="vital-label">Temperature</div>
+                                                    </div>
+                                                    <div class="vital-icon text-warning">
+                                                        <i class="bi bi-thermometer-half"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.respiratoryRate + ' bpm'}">16 bpm</div>
+                                                        <div class="vital-label">Respiratory Rate</div>
+                                                    </div>
+                                                    <div class="vital-icon text-info">
+                                                        <i class="bi bi-lungs"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.oxygenSaturation + '%'}">98%</div>
+                                                        <div class="vital-label">Oxygen Saturation</div>
+                                                    </div>
+                                                    <div class="vital-icon text-success">
+                                                        <i class="bi bi-droplet"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.weight + ' kg'}">70 kg</div>
+                                                        <div class="vital-label">Weight</div>
+                                                    </div>
+                                                    <div class="vital-icon text-secondary">
+                                                        <i class="bi bi-speedometer"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.height + ' cm'}">175 cm</div>
+                                                        <div class="vital-label">Height</div>
+                                                    </div>
+                                                    <div class="vital-icon text-secondary">
+                                                        <i class="bi bi-rulers"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="vital-card bg-light p-3">
+                                                <div class="d-flex justify-content-between">
+                                                    <div>
+                                                        <div class="vital-value" th:text="${latestVitals.painLevel + '/10'}">2/10</div>
+                                                        <div class="vital-label">Pain Level</div>
+                                                    </div>
+                                                    <div class="vital-icon text-danger">
+                                                        <i class="bi bi-emoji-frown"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <h6 class="mb-3">Vital Signs History</h6>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Date & Time</th>
+                                                    <th>BP</th>
+                                                    <th>HR</th>
+                                                    <th>Temp</th>
+                                                    <th>RR</th>
+                                                    <th>O2 Sat</th>
+                                                    <th>Pain</th>
+                                                    <th>Recorded By</th>
+                                                    <th></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr th:each="vital : ${admission.vitalSigns}">
+                                                    <td th:text="${#temporals.format(vital.recordedAt, 'MMM d, yyyy h:mm a')}">Jan 2, 2023 2:30 PM</td>
+                                                    <td th:text="${vital.bloodPressure}">120/80</td>
+                                                    <td th:text="${vital.heartRate + ' bpm'}">72 bpm</td>
+                                                    <td th:text="${vital.temperature + ' °C'}">37.2 °C</td>
+                                                    <td th:text="${vital.respiratoryRate + ' bpm'}">16 bpm</td>
+                                                    <td th:text="${vital.oxygenSaturation + '%'}">98%</td>
+                                                    <td th:text="${vital.painLevel + '/10'}">2/10</td>
+                                                    <td th:text="${vital.recordedBy}">Nurse Johnson</td>
+                                                    <td>
+                                                        <a th:href="@{/inpatient/vital-signs/{id}(id=${vital.id})}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Diet Orders Tab -->
+                    <div class="tab-pane fade" id="diet" role="tabpanel" aria-labelledby="diet-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Diet Orders</h5>
+                                    <a th:href="@{/inpatient/diet-orders/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Diet Order
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.dietOrders)}">
+                                    <i class="bi bi-info-circle me-2"></i> No diet orders have been added yet.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.dietOrders)}">
+                                    <div class="timeline-item" th:each="diet : ${admission.dietOrders}">
+                                        <div class="card note-card diet-note">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${diet.dietType}">REGULAR</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(diet.startDate, 'MMM d, yyyy')}">Jan 2, 2023</span>
+                                                </div>
+                                                <p class="card-text" th:text="${diet.instructions}">Regular diet with no restrictions.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Ordered by: ' + diet.orderedBy}">Ordered by: Dr. Jane Smith</small>
+                                                    <div>
+                                                        <span class="badge bg-success me-2" th:if="${diet.active}">Active</span>
+                                                        <span class="badge bg-secondary me-2" th:unless="${diet.active}">Inactive</span>
+                                                        <a th:href="@{/inpatient/diet-orders/{id}(id=${diet.id})}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-eye me-1"></i> View
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nursing Tab -->
+                    <div class="tab-pane fade" id="nursing" role="tabpanel" aria-labelledby="nursing-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Nursing Instructions</h5>
+                                    <a th:href="@{/inpatient/nursing-instructions/new(admissionId=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-plus-circle me-1"></i> Add Instruction
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.nursingInstructions)}">
+                                    <i class="bi bi-info-circle me-2"></i> No nursing instructions have been added yet.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.nursingInstructions)}">
+                                    <div class="timeline-item" th:each="instruction : ${admission.nursingInstructions}">
+                                        <div class="card note-card nursing-note">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${instruction.instructionType}">MEDICATION</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(instruction.createdAt, 'MMM d, yyyy h:mm a')}">Jan 2, 2023 2:30 PM</span>
+                                                </div>
+                                                <p class="card-text" th:text="${instruction.instructions}">Administer medication as prescribed.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Ordered by: ' + instruction.orderedBy}">Ordered by: Dr. Jane Smith</small>
+                                                    <div>
+                                                        <span class="badge bg-success me-2" th:if="${instruction.active}">Active</span>
+                                                        <span class="badge bg-secondary me-2" th:unless="${instruction.active}">Inactive</span>
+                                                        <a th:href="@{/inpatient/nursing-instructions/{id}(id=${instruction.id})}" class="btn btn-sm btn-outline-primary">
+                                                            <i class="bi bi-eye me-1"></i> View
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Transfers Tab -->
+                    <div class="tab-pane fade" id="transfers" role="tabpanel" aria-labelledby="transfers-tab">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="mb-0">Department Transfers</h5>
+                                    <a th:href="@{/inpatient/admissions/{id}/transfer(id=${admission.id})}" class="btn btn-sm btn-primary" th:if="${admission.admissionStatus.name() == 'ADMITTED'}">
+                                        <i class="bi bi-arrow-left-right me-1"></i> Transfer Patient
+                                    </a>
+                                </div>
+                                
+                                <div class="alert alert-info" th:if="${#lists.isEmpty(admission.departmentTransfers)}">
+                                    <i class="bi bi-info-circle me-2"></i> No department transfers have been recorded.
+                                </div>
+                                
+                                <div class="timeline" th:unless="${#lists.isEmpty(admission.departmentTransfers)}">
+                                    <div class="timeline-item" th:each="transfer : ${admission.departmentTransfers}">
+                                        <div class="card">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <h6 class="mb-0" th:text="${'Transfer #' + transfer.id}">Transfer #1</h6>
+                                                    <span class="timeline-date" th:text="${#temporals.format(transfer.transferDate, 'MMM d, yyyy h:mm a')}">Jan 5, 2023 10:30 AM</span>
+                                                </div>
+                                                <div class="row mb-3">
+                                                    <div class="col-md-5">
+                                                        <p class="mb-1 text-muted">From</p>
+                                                        <p class="mb-0" th:text="${transfer.fromDepartment + ' - ' + transfer.fromWard}">Cardiology - CCU</p>
+                                                        <p class="mb-0" th:text="${'Room/Bed: ' + transfer.fromRoom + '/' + transfer.fromBed}">Room/Bed: 301/A</p>
+                                                    </div>
+                                                    <div class="col-md-2 text-center">
+                                                        <i class="bi bi-arrow-right" style="font-size: 1.5rem;"></i>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <p class="mb-1 text-muted">To</p>
+                                                        <p class="mb-0" th:text="${transfer.toDepartment + ' - ' + transfer.toWard}">General Medicine - General Ward</p>
+                                                        <p class="mb-0" th:text="${'Room/Bed: ' + transfer.toRoom + '/' + transfer.toBed}">Room/Bed: 201/C</p>
+                                                    </div>
+                                                </div>
+                                                <p class="card-text" th:text="${transfer.reason}">Patient condition has stabilized and no longer requires intensive cardiac monitoring.</p>
+                                                <div class="d-flex justify-content-between align-items-center mt-2">
+                                                    <small class="text-muted" th:text="${'Ordered by: ' + transfer.orderedBy}">Ordered by: Dr. Jane Smith</small>
+                                                    <a th:href="@{/inpatient/transfers/{id}(id=${transfer.id})}" class="btn btn-sm btn-outline-primary">
+                                                        <i class="bi bi-eye me-1"></i> View Details
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/doctor-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

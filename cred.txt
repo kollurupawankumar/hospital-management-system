@@ -1,0 +1,296 @@
+Login Credentials
+Admin User
+
+Username: admin
+Password: password
+Doctor
+
+Username: doctor
+Password: password
+Nurse
+
+Username: nurse
+Password: password
+Receptionist
+
+Username: reception
+Password: password
+Lab Technician
+
+Username: lab
+Password: password
+
+
+Hospital Management System – Full Module List with Features
+1. 🧑‍⚕️ Doctor Module
+Features:
+
+Dashboard with appointments and tasks
+
+Patient medical history and EMR access
+
+Appointment scheduling and management
+
+Add diagnoses and treatment plans
+
+E-prescriptions and medications
+
+Lab & test orders + results viewing
+
+Inpatient care (notes, rounds, discharge summaries)
+
+Access to imaging and radiology reports
+
+View duty rosters
+
+2. 👨‍🦰 Patient Module
+Features:
+
+Self-registration or assisted registration
+
+View appointment history and upcoming visits
+
+Access to lab reports, prescriptions, invoices
+
+Personal health record (PHR) management
+
+Online consultation (telemedicine)
+
+Feedback and ratings for doctors/hospital
+
+Notifications & reminders (SMS/Email)
+
+3. 👩‍💼 Reception / Front Office Module
+Features:
+
+Patient registration and ID generation
+
+Schedule appointments (OPD, Specialist)
+
+Manage doctor calendar and slots
+
+Queue management
+
+Admission & discharge processing
+
+Visitor management
+
+Token generation for walk-ins
+
+4. 🛏️ Inpatient Management Module (IPD)
+Features:
+
+Bed allocation and tracking
+
+Admission forms and approvals
+
+Daily rounds and clinical notes
+
+Diet and nursing instructions
+
+Discharge summary and billing
+
+Transfer between departments/wards
+
+Patient progress tracking
+
+5. 🚪 Outpatient Management Module (OPD)
+Features:
+
+Appointment scheduling and check-in
+
+OPD visit tracking and token system
+
+EMR access for each visit
+
+Prescriptions and diagnosis entry
+
+Bill generation after OPD visit
+
+6. 🧪 Laboratory Information System (LIS)
+Features:
+
+Test ordering by doctors
+
+Sample collection tracking
+
+Lab test status updates
+
+Automated result entry
+
+Integration with analyzers
+
+Report generation and approval
+
+7. 🩻 Radiology Module
+Features:
+
+Imaging test requests (X-Ray, MRI, CT, USG)
+
+Scheduling and queue management
+
+PACS integration (for image viewing)
+
+Reporting and result delivery to doctors
+
+Billing for procedures
+
+8. 💊 Pharmacy Module
+Features:
+
+Medicine inventory management
+
+E-prescription integration
+
+Billing for medication
+
+Supplier management
+
+Purchase and return tracking
+
+Stock alerts and expiry tracking
+
+9. 💰 Billing and Invoicing Module
+Features:
+
+OPD, IPD, lab, pharmacy billing
+
+Insurance claim generation
+
+Patient-wise financial history
+
+Refund and discount processing
+
+GST/Tax configuration
+
+Integration with accounting system
+
+10. 🧾 Inventory and Store Management
+Features:
+
+Procurement management
+
+Vendor/supplier database
+
+Purchase orders and invoices
+
+Stock tracking and alerts
+
+Expiry and low stock alerts
+
+Asset and equipment tracking
+
+11. 🧑‍⚕️‍👩‍⚕️ Nursing/Clinical Staff Module
+Features:
+
+Access to patient vitals and charts
+
+Execute doctor's orders
+
+Record nursing notes
+
+Administer medications
+
+Shift handover process
+
+Care plan management
+
+12. 🧑‍💻 Admin/HR Management Module
+Features:
+
+Staff database with roles
+
+Attendance and shift scheduling
+
+Leave and payroll management
+
+Access control and permissions
+
+Performance tracking
+
+13. 🏦 Accounts & Finance Module
+Features:
+
+Revenue tracking by department
+
+Expense management
+
+Profit/loss statements
+
+Ledger and balance sheet
+
+Integration with external accounting tools (like Tally)
+
+14. 🛌 Bed & Ward Management
+Features:
+
+Real-time bed availability tracking
+
+Bed allocation (by type, ward, isolation, ICU)
+
+Auto-assign beds during admission
+
+Transfer and discharge automation
+
+15. 📋 Reports & Analytics Module
+Features:
+
+Daily, weekly, monthly reports
+
+Department-wise reports (OPD/IPD/Lab)
+
+Financial, clinical, and operational dashboards
+
+Export to PDF/Excel
+
+KPI and performance metrics
+
+16. ☁️ Integration & Third-Party Modules
+Features:
+
+PACS, LIS, RIS integration
+
+Government health portals (ABHA, Ayushman Bharat)
+
+Payment gateway integration
+
+SMS/Email/WhatsApp notifications
+
+HL7/FHIR standards compliance
+
+17. 📞 Telemedicine Module
+Features:
+
+Online booking and video consultation
+
+Secure video/audio call system
+
+Digital prescriptions
+
+Virtual consultation billing
+
+18. 🔐 Security & Compliance Module
+Features:
+
+Role-based access control (RBAC)
+
+Audit logs and session tracking
+
+Data encryption (at rest and in transit)
+
+HIPAA/GDPR compliance settings
+
+User activity monitoring
+
+19. 📲 Mobile App Support Module (Optional)
+Features:
+
+Mobile apps for patients and doctors
+
+Appointment booking and reminders
+
+Report downloads and alerts
+
+Telemedicine through mobile
+
+Push notifications

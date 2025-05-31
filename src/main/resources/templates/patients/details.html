@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Patient Details</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Patient Details</h2>
+            <div>
+                <a th:href="@{/patients}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+                <a th:href="@{/patients/{id}/edit(id=${patient.id})}" class="btn btn-warning">
+                    <i class="fas fa-edit"></i> Edit
+                </a>
+                <a th:href="@{/patients/{id}/records(id=${patient.id})}" class="btn btn-primary">
+                    <i class="fas fa-file-medical"></i> Medical Records
+                </a>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Personal Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th style="width: 30%">ID</th>
+                                <td th:text="${patient.id}"></td>
+                            </tr>
+                            <tr>
+                                <th>First Name</th>
+                                <td th:text="${patient.firstName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Last Name</th>
+                                <td th:text="${patient.lastName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Date of Birth</th>
+                                <td th:text="${#temporals.format(patient.dateOfBirth, 'dd-MM-yyyy')}"></td>
+                            </tr>
+                            <tr>
+                                <th>Gender</th>
+                                <td th:text="${patient.gender}"></td>
+                            </tr>
+                            <tr>
+                                <th>Blood Group</th>
+                                <td th:text="${patient.bloodGroup}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Contact Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th style="width: 30%">Phone</th>
+                                <td th:text="${patient.phoneNumber}"></td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td th:text="${patient.email}"></td>
+                            </tr>
+                            <tr>
+                                <th>Address</th>
+                                <td th:text="${patient.address}"></td>
+                            </tr>
+                            <tr>
+                                <th>Emergency Contact</th>
+                                <td th:text="${patient.emergencyContactName}"></td>
+                            </tr>
+                            <tr>
+                                <th>Emergency Phone</th>
+                                <td th:text="${patient.emergencyContactPhone}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Medical Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <h6>Allergies</h6>
+                        <p th:text="${patient.allergies ?: 'None recorded'}"></p>
+                        
+                        <h6>Medical History</h6>
+                        <p th:text="${patient.medicalHistory ?: 'None recorded'}"></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5>Insurance Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="table">
+                            <tr>
+                                <th style="width: 30%">Provider</th>
+                                <td th:text="${patient.insuranceProvider ?: 'Not provided'}"></td>
+                            </tr>
+                            <tr>
+                                <th>Policy Number</th>
+                                <td th:text="${patient.insurancePolicyNumber ?: 'Not provided'}"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

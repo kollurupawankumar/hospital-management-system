@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inpatient Admissions</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .admission-card {
+            transition: all 0.3s ease;
+            border-left: 4px solid #007bff;
+        }
+        .admission-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .admission-card.discharged {
+            border-left-color: #28a745;
+        }
+        .admission-card.pending {
+            border-left-color: #ffc107;
+        }
+        .admission-card.cancelled {
+            border-left-color: #dc3545;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .filter-section {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/doctor-header :: header"></div>
+    
+    <div class="container py-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a th:href="@{/doctor/dashboard}">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Inpatient Admissions</li>
+                    </ol>
+                </nav>
+                <h2>Inpatient Admissions</h2>
+                <p class="text-muted">Manage patient admissions and bed assignments</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a th:href="@{/inpatient/admissions/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> New Admission
+                </a>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <form th:action="@{/inpatient/admissions}" method="get">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <label for="status" class="form-label">Status</label>
+                        <select class="form-select" id="status" name="status">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING" th:selected="${param.status != null && param.status[0] == 'PENDING'}">Pending</option>
+                            <option value="ADMITTED" th:selected="${param.status != null && param.status[0] == 'ADMITTED'}">Admitted</option>
+                            <option value="DISCHARGED" th:selected="${param.status != null && param.status[0] == 'DISCHARGED'}">Discharged</option>
+                            <option value="TRANSFERRED" th:selected="${param.status != null && param.status[0] == 'TRANSFERRED'}">Transferred</option>
+                            <option value="CANCELLED" th:selected="${param.status != null && param.status[0] == 'CANCELLED'}">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="ward" class="form-label">Ward</label>
+                        <select class="form-select" id="ward" name="wardId">
+                            <option value="">All Wards</option>
+                            <option th:each="ward : ${wards}" 
+                                    th:value="${ward.id}" 
+                                    th:text="${ward.name}"
+                                    th:selected="${param.wardId != null && param.wardId[0] == ward.id.toString()}">
+                                Cardiology
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="doctor" class="form-label">Doctor</label>
+                        <select class="form-select" id="doctor" name="doctorId">
+                            <option value="">All Doctors</option>
+                            <option th:each="doctor : ${doctors}" 
+                                    th:value="${doctor.id}" 
+                                    th:text="${'Dr. ' + doctor.firstName + ' ' + doctor.lastName}"
+                                    th:selected="${param.doctorId != null && param.doctorId[0] == doctor.id.toString()}">
+                                Dr. Jane Smith
+                            </option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="searchTerm" class="form-label">Search</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="searchTerm" name="search" 
+                                   placeholder="Patient name or ID" th:value="${param.search != null ? param.search[0] : ''}">
+                            <button class="btn btn-outline-secondary" type="submit">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+        
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="alert alert-info" th:if="${admissions.isEmpty()}">
+                    <i class="bi bi-info-circle me-2"></i> No admissions found matching your criteria.
+                </div>
+                
+                <div class="card" th:unless="${admissions.isEmpty()}">
+                    <div class="card-header bg-white">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Admissions</h5>
+                            <span class="text-muted" th:text="${'Total: ' + admissions.size()}">Total: 10</span>
+                        </div>
+                    </div>
+                    <div class="list-group list-group-flush">
+                        <div th:each="admission : ${admissions}" 
+                             th:classappend="${admission.admissionStatus.name() == 'DISCHARGED' ? 'discharged' : 
+                                             (admission.admissionStatus.name() == 'PENDING' ? 'pending' : 
+                                             (admission.admissionStatus.name() == 'CANCELLED' ? 'cancelled' : ''))}">
+                            <a th:href="@{/inpatient/admissions/{id}(id=${admission.id})}" class="list-group-item list-group-item-action admission-card">
+                                <div class="d-flex w-100 justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-1" th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">John Doe</h5>
+                                        <p class="mb-1 text-muted" th:text="${'ID: ' + admission.patient.patientId + ' • Admission #: ' + admission.admissionNumber}">ID: P12345 • Admission #: ADM12345</p>
+                                    </div>
+                                    <div class="text-end">
+                                        <span th:class="${'badge status-badge ' + 
+                                                        (admission.admissionStatus.name() == 'ADMITTED' ? 'bg-success' : 
+                                                        (admission.admissionStatus.name() == 'PENDING' ? 'bg-warning' : 
+                                                        (admission.admissionStatus.name() == 'DISCHARGED' ? 'bg-info' : 
+                                                        (admission.admissionStatus.name() == 'CANCELLED' ? 'bg-danger' : 
+                                                        (admission.admissionStatus.name() == 'TRANSFERRED' ? 'bg-primary' : 'bg-secondary')))))}">
+                                            <i th:class="${'bi ' + 
+                                                        (admission.admissionStatus.name() == 'ADMITTED' ? 'bi-check-circle' : 
+                                                        (admission.admissionStatus.name() == 'PENDING' ? 'bi-hourglass' : 
+                                                        (admission.admissionStatus.name() == 'DISCHARGED' ? 'bi-box-arrow-right' : 
+                                                        (admission.admissionStatus.name() == 'CANCELLED' ? 'bi-x-circle' : 
+                                                        (admission.admissionStatus.name() == 'TRANSFERRED' ? 'bi-arrow-left-right' : 'bi-question-circle')))))}"></i>
+                                            <span th:text="${admission.admissionStatus}">ADMITTED</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="d-flex w-100 justify-content-between mt-2">
+                                    <div>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar me-1"></i>
+                                            <span th:text="${'Admitted: ' + #temporals.format(admission.admissionDate, 'MMM d, yyyy')}">Admitted: Jan 1, 2023</span>
+                                        </small>
+                                        <br>
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt me-1"></i>
+                                            <span th:text="${'Ward: ' + admission.ward + ' • Room/Bed: ' + admission.roomNumber + '/' + admission.bedNumber}">Ward: Cardiology • Room/Bed: 301/A</span>
+                                        </small>
+                                    </div>
+                                    <div class="text-end">
+                                        <small class="text-muted">
+                                            <i class="bi bi-person me-1"></i>
+                                            <span th:text="${'Dr. ' + admission.admittingDoctor.firstName + ' ' + admission.admittingDoctor.lastName}">Dr. Jane Smith</span>
+                                        </small>
+                                        <br>
+                                        <small class="text-muted" th:if="${admission.admissionStatus.name() == 'DISCHARGED'}">
+                                            <i class="bi bi-calendar-check me-1"></i>
+                                            <span th:text="${'Discharged: ' + #temporals.format(admission.actualDischargeDate, 'MMM d, yyyy')}">Discharged: Jan 10, 2023</span>
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <nav aria-label="Page navigation" th:if="${totalPages > 1}">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${currentPage == 0 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/inpatient/admissions(page=${currentPage - 1}, size=${size}, status=${param.status}, wardId=${param.wardId}, doctorId=${param.doctorId}, search=${param.search})}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" th:classappend="${currentPage == i ? 'active' : ''}">
+                    <a class="page-link" th:href="@{/inpatient/admissions(page=${i}, size=${size}, status=${param.status}, wardId=${param.wardId}, doctorId=${param.doctorId}, search=${param.search})}" th:text="${i + 1}">1</a>
+                </li>
+                <li class="page-item" th:classappend="${currentPage == totalPages - 1 ? 'disabled' : ''}">
+                    <a class="page-link" th:href="@{/inpatient/admissions(page=${currentPage + 1}, size=${size}, status=${param.status}, wardId=${param.wardId}, doctorId=${param.doctorId}, search=${param.search})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    
+    <div th:replace="fragments/doctor-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laboratory Tests</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        .table-container {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 0.25rem 0.5rem;
+        }
+        .search-container {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 15px;
+            background-color: white;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="fragments/lab-header :: header"></div>
+    
+    <div class="container-fluid py-4">
+        <div class="row mb-4">
+            <div class="col-md-8">
+                <h2>Laboratory Tests</h2>
+                <p class="text-muted" th:if="${category != null}">Category: <span th:text="${category}">Hematology</span></p>
+                <p class="text-muted" th:unless="${category != null}">All available laboratory tests</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a th:href="@{/laboratory/tests/new}" class="btn btn-primary">
+                    <i class="bi bi-plus-circle me-1"></i> Add New Test
+                </a>
+            </div>
+        </div>
+        
+        <!-- Search and Filter -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="search-container">
+                    <form th:action="@{/laboratory/tests}" method="get" class="row g-3">
+                        <div class="col-md-4">
+                            <label for="searchName" class="form-label">Test Name</label>
+                            <input type="text" class="form-control" id="searchName" name="name" placeholder="Search by test name">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="category" class="form-label">Category</label>
+                            <select class="form-select" id="category" name="category">
+                                <option value="">All Categories</option>
+                                <option th:each="cat : ${categories}" th:value="${cat}" th:text="${cat}">Hematology</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="department" class="form-label">Department</label>
+                            <select class="form-select" id="department" name="department">
+                                <option value="">All Departments</option>
+                                <option th:each="dept : ${departments}" th:value="${dept}" th:text="${dept}">Laboratory</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-1"></i> Search
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Alert Messages -->
+        <div class="row mb-4" th:if="${successMessage != null || errorMessage != null}">
+            <div class="col-12">
+                <div class="alert alert-success alert-dismissible fade show" role="alert" th:if="${successMessage != null}">
+                    <span th:text="${successMessage}">Operation successful</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <div class="alert alert-danger alert-dismissible fade show" role="alert" th:if="${errorMessage != null}">
+                    <span th:text="${errorMessage}">Operation failed</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tests Table -->
+        <div class="row">
+            <div class="col-12">
+                <div class="table-container">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Test Code</th>
+                                <th>Test Name</th>
+                                <th>Category</th>
+                                <th>Department</th>
+                                <th>Sample Type</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="test : ${tests}" th:if="${!tests.empty}">
+                                <td th:text="${test.testCode}">CBC001</td>
+                                <td>
+                                    <a th:href="@{/laboratory/tests/{id}(id=${test.id})}" th:text="${test.testName}">
+                                        Complete Blood Count
+                                    </a>
+                                </td>
+                                <td th:text="${test.category}">Hematology</td>
+                                <td th:text="${test.department}">Laboratory</td>
+                                <td th:text="${test.sampleType}">Blood</td>
+                                <td th:text="${'₹' + test.price}">₹500</td>
+                                <td>
+                                    <span th:class="${'badge ' + (test.isActive ? 'bg-success' : 'bg-danger')}" 
+                                          th:text="${test.isActive ? 'Active' : 'Inactive'}">
+                                        Active
+                                    </span>
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a th:href="@{/laboratory/tests/{id}(id=${test.id})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                        <a th:href="@{/laboratory/tests/{id}/edit(id=${test.id})}" class="btn btn-sm btn-outline-secondary">
+                                            <i class="bi bi-pencil"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                data-bs-toggle="modal" th:data-bs-target="${'#deleteModal-' + test.id}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Delete Confirmation Modal -->
+                                    <div class="modal fade" th:id="${'deleteModal-' + test.id}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="deleteModalLabel">Confirm Delete</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete the test <strong th:text="${test.testName}">Complete Blood Count</strong>?
+                                                    This action cannot be undone.
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                                    <form th:action="@{/laboratory/tests/{id}/delete(id=${test.id})}" method="post">
+                                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${tests.empty}">
+                                <td colspan="8" class="text-center">No tests found</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div th:replace="fragments/lab-footer :: footer"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
