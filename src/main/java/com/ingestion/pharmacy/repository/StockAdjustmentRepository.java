@@ -27,7 +27,7 @@ public interface StockAdjustmentRepository extends JpaRepository<StockAdjustment
     @Query("SELECT sa FROM StockAdjustment sa WHERE sa.adjustmentType = :type ORDER BY sa.adjustmentDate DESC")
     List<StockAdjustment> findByAdjustmentTypeOrderByAdjustmentDateDesc(@Param("type") StockAdjustment.AdjustmentType type);
     
-    @Query("SELECT sa FROM StockAdjustment sa WHERE sa.createdBy.id = :userId ORDER BY sa.adjustmentDate DESC")
+    @Query("SELECT sa FROM StockAdjustment sa WHERE sa.createdByUser.id = :userId ORDER BY sa.adjustmentDate DESC")
     List<StockAdjustment> findByCreatedByOrderByAdjustmentDateDesc(@Param("userId") Long userId);
     
     @Query("SELECT sa FROM StockAdjustment sa WHERE sa.approvedBy.id = :userId ORDER BY sa.adjustmentDate DESC")

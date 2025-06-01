@@ -119,14 +119,14 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Patient ID:</strong> <span th:text="${registration.patientId}"></span></p>
-                                <p><strong>Patient Name:</strong> <span th:text="${registration.patientName}"></span></p>
+                                <p><strong>Patient ID:</strong> <span th:text="${registration.patient.id}"></span></p>
+                                <p><strong>Patient Name:</strong> <span th:text="${registration.patient.firstName + ' ' + registration.patient.lastName}"></span></p>
                             </div>
                             <div class="col-md-6">
-                                <a th:href="@{/patient/view/{id}(id=${registration.patientId})}" class="btn btn-primary">
+                                <a th:href="@{/patient/view/{id}(id=${registration.patient.id})}" class="btn btn-primary">
                                     <i class="bi bi-person"></i> View Patient Profile
                                 </a>
-                                <a th:href="@{/reception/registration/patient/{id}(id=${registration.patientId})}" class="btn btn-info">
+                                <a th:href="@{/reception/registration/patient/{id}(id=${registration.patient.id})}" class="btn btn-info">
                                     <i class="bi bi-list-check"></i> View All Registrations
                                 </a>
                             </div>
@@ -142,15 +142,15 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-md-6">
-                                <a th:href="@{/reception/appointments/schedule/{patientId}(patientId=${registration.patientId})}" class="btn btn-success mb-2 w-100">
+                                <a th:href="@{/reception/appointments/schedule/{patientId}(patientId=${registration.patient.id})}" class="btn btn-success mb-2 w-100">
                                     <i class="bi bi-calendar-plus"></i> Schedule Appointment
                                 </a>
-                                <a th:href="@{/reception/tokens/generate/{patientId}(patientId=${registration.patientId})}" class="btn btn-warning mb-2 w-100">
+                                <a th:href="@{/reception/tokens/generate/{patientId}(patientId=${registration.patient.id})}" class="btn btn-warning mb-2 w-100">
                                     <i class="bi bi-ticket-perforated"></i> Generate Token
                                 </a>
                             </div>
                             <div class="col-md-6">
-                                <a th:href="@{/reception/admissions/new/{patientId}(patientId=${registration.patientId})}" class="btn btn-primary mb-2 w-100">
+                                <a th:href="@{/reception/admissions/new/{patientId}(patientId=${registration.patient.id})}" class="btn btn-primary mb-2 w-100">
                                     <i class="bi bi-hospital"></i> Admit Patient
                                 </a>
                                 <form th:if="${registration.active}" th:action="@{/reception/registration/deactivate/{id}(id=${registration.id})}" method="post">

@@ -9,7 +9,7 @@
     <div class="container-fluid">
         <h1 class="h3 mb-4 text-gray-800">Inventory Dashboard</h1>
 
-        <!-- Content Row -->
+        <!-- Content Row 1 -->
         <div class="row">
             <!-- Low Stock Items Card -->
             <div class="col-xl-3 col-md-6 mb-4">
@@ -19,7 +19,11 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                     Low Stock Items</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${lowStockItems.size()}">0</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.lowStockItemsCount}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-boxes me-1"></i>
+                                    Total Items: <span th:text="${stats.totalItems}">0</span>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-exclamation-triangle fa-2x text-gray-300"></i>
@@ -37,28 +41,14 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
                                     Expiring Soon</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${expiringItems.size()}">0</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.expiringItemsCount}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-calendar-times me-1"></i>
+                                    Expired: <span th:text="${stats.expiredItemsCount}">0</span>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-calendar-alt fa-2x text-gray-300"></i>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Expired Items Card -->
-            <div class="col-xl-3 col-md-6 mb-4">
-                <div class="card border-left-danger shadow h-100 py-2">
-                    <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                            <div class="col mr-2">
-                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
-                                    Expired Items</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${expiredItems.size()}">0</div>
-                            </div>
-                            <div class="col-auto">
-                                <i class="fas fa-calendar-times fa-2x text-gray-300"></i>
                             </div>
                         </div>
                     </div>
@@ -73,11 +63,252 @@
                             <div class="col mr-2">
                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                     Pending Orders</div>
-                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${pendingOrders.size()}">0</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.pendingOrdersCount}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-dollar-sign me-1"></i>
+                                    Monthly: <span th:text="${#numbers.formatCurrency(stats.monthlyPurchaseValue)}">$0</span>
+                                </div>
                             </div>
                             <div class="col-auto">
                                 <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Assets Maintenance Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-danger shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                    Assets Maintenance</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.assetsNeedingMaintenanceCount}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-tools me-1"></i>
+                                    Needs Attention
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-wrench fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Row 2 - Financial Overview -->
+        <div class="row">
+            <!-- Total Inventory Value Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-success shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                    Inventory Value</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${#numbers.formatCurrency(stats.totalInventoryValue)}">$0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-chart-line me-1"></i>
+                                    Total Asset Value
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stores Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-secondary shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-secondary text-uppercase mb-1">
+                                    Active Stores</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.totalStores}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-warehouse me-1"></i>
+                                    Storage Locations
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-store fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Suppliers Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-dark shadow h-100 py-2">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-dark text-uppercase mb-1">
+                                    Active Suppliers</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.activeSuppliers}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-truck me-1"></i>
+                                    Total: <span th:text="${stats.totalSuppliers}">0</span>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-handshake fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Card -->
+            <div class="col-xl-3 col-md-6 mb-4">
+                <div class="card border-left-purple shadow h-100 py-2" style="border-left: 0.25rem solid #6f42c1 !important;">
+                    <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                                <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #6f42c1;">
+                                    Item Categories</div>
+                                <div class="h5 mb-0 font-weight-bold text-gray-800" th:text="${stats.totalCategories}">0</div>
+                                <div class="text-xs text-muted">
+                                    <i class="fas fa-tags me-1"></i>
+                                    Product Types
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <i class="fas fa-layer-group fa-2x text-gray-300"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-xl-8 col-lg-7">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Monthly Purchase Trends</h6>
+                        <div class="dropdown no-arrow">
+                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown">
+                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow">
+                                <a class="dropdown-item" href="#">View Details</a>
+                                <a class="dropdown-item" href="#">Export Data</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <canvas id="monthlyPurchaseChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-xl-4 col-lg-5">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Inventory Value by Category</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-pie pt-4 pb-2">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activities Row -->
+        <div class="row mb-4">
+            <!-- Recent Goods Receipts -->
+            <div class="col-xl-6 col-lg-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Recent Goods Receipts</h6>
+                        <a href="/inventory/goods-receipts" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Receipt #</th>
+                                        <th>Supplier</th>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="receipt : ${recentGoodsReceipts}">
+                                        <td th:text="${receipt.receiptNumber}">GRN-001</td>
+                                        <td th:text="${receipt.supplier.name}">Supplier Name</td>
+                                        <td th:text="${#temporals.format(receipt.receiptDate, 'dd-MM-yyyy')}">01-01-2023</td>
+                                        <td th:text="${#numbers.formatCurrency(receipt.totalAmount)}">$100.00</td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${receipt.status.name() == 'PENDING' ? 'bg-warning' : 
+                                                                   receipt.status.name() == 'COMPLETED' ? 'bg-success' : 'bg-danger'}"
+                                                  th:text="${receipt.status}">Pending</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(recentGoodsReceipts)}">
+                                        <td colspan="5" class="text-center text-muted">No recent goods receipts</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Suppliers -->
+            <div class="col-xl-6 col-lg-6">
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                        <h6 class="m-0 font-weight-bold text-primary">Top Suppliers by Order Value</h6>
+                        <a href="/suppliers" class="btn btn-sm btn-primary">View All</a>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                            <table class="table table-bordered table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th>Contact</th>
+                                        <th>Orders</th>
+                                        <th>Total Value</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="supplier : ${topSuppliers}">
+                                        <td th:text="${supplier.name}">Supplier Name</td>
+                                        <td th:text="${supplier.contactPerson}">Contact Person</td>
+                                        <td>5</td>
+                                        <td>$5,000</td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${supplier.isActive ? 'bg-success' : 'bg-secondary'}"
+                                                  th:text="${supplier.isActive ? 'Active' : 'Inactive'}">Active</span>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${#lists.isEmpty(topSuppliers)}">
+                                        <td colspan="5" class="text-center text-muted">No supplier data available</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -231,5 +462,113 @@
         </div>
     </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Inventory Dashboard Charts -->
+<script th:inline="javascript">
+    // Monthly Purchase Chart
+    const monthlyPurchaseCtx = document.getElementById('monthlyPurchaseChart').getContext('2d');
+    const monthlyPurchaseData = /*[[${monthlyPurchaseData}]]*/ [];
+    
+    new Chart(monthlyPurchaseCtx, {
+        type: 'line',
+        data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            datasets: [{
+                label: 'Purchase Value ($)',
+                data: monthlyPurchaseData,
+                borderColor: 'rgb(54, 162, 235)',
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                tension: 0.1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                title: {
+                    display: true,
+                    text: 'Monthly Purchase Trends'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value, index, values) {
+                            return '$' + value.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Category-wise Inventory Value Pie Chart
+    const categoryCtx = document.getElementById('categoryChart').getContext('2d');
+    const categoryData = /*[[${categoryWiseInventoryValue}]]*/ {};
+    
+    new Chart(categoryCtx, {
+        type: 'doughnut',
+        data: {
+            labels: Object.keys(categoryData),
+            datasets: [{
+                data: Object.values(categoryData),
+                backgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF',
+                    '#FF9F40',
+                    '#FF6384',
+                    '#C9CBCF'
+                ],
+                hoverBackgroundColor: [
+                    '#FF6384',
+                    '#36A2EB',
+                    '#FFCE56',
+                    '#4BC0C0',
+                    '#9966FF',
+                    '#FF9F40',
+                    '#FF6384',
+                    '#C9CBCF'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                },
+                title: {
+                    display: true,
+                    text: 'Inventory Value by Category'
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': $' + context.parsed.toLocaleString();
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Auto-refresh dashboard every 5 minutes
+    setInterval(function() {
+        location.reload();
+    }, 300000);
+
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
 </body>
 </html>

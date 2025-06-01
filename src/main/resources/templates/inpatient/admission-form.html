@@ -76,7 +76,7 @@
                                     <option value="">-- Select Patient --</option>
                                     <option th:each="patient : ${patients}" 
                                             th:value="${patient.id}" 
-                                            th:text="${patient.firstName + ' ' + patient.lastName + ' (' + patient.patientId + ')'}">
+                                            th:text="${patient.firstName + ' ' + patient.lastName + ' (' + patient.id + ')'}">
                                         John Doe (P12345)
                                     </option>
                                 </select>
