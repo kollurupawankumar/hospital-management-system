@@ -40,16 +40,23 @@ public class PatientController {
     }
 
     @GetMapping("/search")
-    public String searchPatients(@RequestParam String searchTerm, Model model) {
-        log.info("Searching patients with term: {}", searchTerm);
-        List<PatientDTO> patients = patientService.searchPatients(searchTerm)
-                .stream()
-                .map(PatientDTO::fromEntity)
-                .collect(Collectors.toList());
+    public String showSearchForm(@RequestParam(required = false) String searchTerm, Model model) {
+        log.info("Displaying patient search form");
         
-        model.addAttribute("patients", patients);
-        model.addAttribute("searchTerm", searchTerm);
-        return "patients/list";
+        if (searchTerm != null && !searchTerm.trim().isEmpty()) {
+            log.info("Searching patients with term: {}", searchTerm);
+            List<PatientDTO> patients = patientService.searchPatients(searchTerm)
+                    .stream()
+                    .map(PatientDTO::fromEntity)
+                    .collect(Collectors.toList());
+            
+            model.addAttribute("patients", patients);
+            model.addAttribute("searchTerm", searchTerm);
+        } else {
+            model.addAttribute("patients", List.of());
+        }
+        
+        return "patients/search";
     }
 
     @GetMapping("/{id}")
@@ -150,5 +157,31 @@ public class PatientController {
         }
         
         return "redirect:/patients";
+    }
+
+    @GetMapping("/reports")
+    public String showReports(Model model) {
+        log.info("Displaying patient reports");
+        List<PatientDTO> patients = patientService.getAllPatients()
+                .stream()
+                .map(PatientDTO::fromEntity)
+                .collect(Collectors.toList());
+        
+        model.addAttribute("patients", patients);
+        model.addAttribute("totalPatients", patients.size());
+        return "patients/reports";
+    }
+
+    @GetMapping("/emergency")
+    public String showEmergency(Model model) {
+        log.info("Displaying emergency patients");
+        // For now, just show all patients - in real implementation, filter by emergency status
+        List<PatientDTO> patients = patientService.getAllPatients()
+                .stream()
+                .map(PatientDTO::fromEntity)
+                .collect(Collectors.toList());
+        
+        model.addAttribute("emergencyPatients", patients);
+        return "patients/emergency";
     }
 }

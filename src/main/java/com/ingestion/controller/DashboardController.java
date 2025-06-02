@@ -113,7 +113,18 @@ public class DashboardController {
     @GetMapping("/admin/dashboard")
     public String adminDashboard(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        model.addAttribute("username", auth.getName());
+        String username = auth.getName();
+        model.addAttribute("username", username);
+        
+        // Add user details
+        Optional<User> userOpt = userService.getUserByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            model.addAttribute("user", user);
+            model.addAttribute("userRole", user.getRoles().contains(User.UserRole.ROLE_ADMIN) ? "System Administrator" : "User");
+        } else {
+            model.addAttribute("userRole", "Administrator");
+        }
         
         // Dashboard Statistics using available methods
         Map<String, Object> stats = new HashMap<>();
@@ -125,12 +136,13 @@ public class DashboardController {
         stats.put("newPatientsThisMonth", 0); // Placeholder
         
         // Doctor Statistics
-        stats.put("totalDoctors", 0); // Placeholder
-        stats.put("activeDoctors", 0); // Placeholder
+        stats.put("totalDoctors", 24); // Placeholder
+        stats.put("activeDoctors", 22); // Placeholder
+        stats.put("doctorsOnDuty", 18); // Placeholder - doctors currently on duty
         
         // Appointment Statistics
-        stats.put("totalAppointmentsToday", 0); // Placeholder
-        stats.put("pendingAppointments", 0); // Placeholder
+        stats.put("totalAppointmentsToday", 42); // Placeholder
+        stats.put("pendingAppointments", 12); // Placeholder
         stats.put("completedAppointmentsToday", 0); // Placeholder
         stats.put("cancelledAppointmentsToday", 0); // Placeholder
         
@@ -138,10 +150,12 @@ public class DashboardController {
         stats.put("pendingLabOrders", 0); // Placeholder
         stats.put("completedLabOrdersToday", 0); // Placeholder
         stats.put("totalLabOrdersThisMonth", 0); // Placeholder
+        stats.put("pendingLabTests", 23); // Placeholder
+        stats.put("completedLabTests", 45); // Placeholder
         
         // Financial Statistics
-        stats.put("totalRevenueToday", 0); // Placeholder
-        stats.put("totalRevenueThisMonth", 0); // Placeholder
+        stats.put("totalRevenueToday", 2450.00); // Placeholder
+        stats.put("totalRevenueThisMonth", 45200.00); // Placeholder
         stats.put("pendingPayments", 0); // Placeholder
         stats.put("totalCollectedToday", 0); // Placeholder
         
@@ -150,6 +164,14 @@ public class DashboardController {
         stats.put("expiredItems", inventoryService.findExpiredItems().size());
         stats.put("expiringItemsNext30Days", inventoryService.findExpiringItems(30).size());
         stats.put("pendingPurchaseOrders", 0); // Placeholder
+        
+        // Bed Statistics
+        stats.put("occupiedBeds", 89); // Placeholder
+        stats.put("bedOccupancyRate", "74%"); // Placeholder
+        
+        // Nurse Statistics
+        stats.put("totalNurses", 36); // Placeholder
+        stats.put("nursesOnDuty", 28); // Placeholder
         
         // User Statistics
         stats.put("totalUsers", 0); // Placeholder
@@ -198,5 +220,24 @@ public class DashboardController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         model.addAttribute("username", auth.getName());
         return "dashboard/reception";
+    }
+    
+    @GetMapping("/profile")
+    public String userProfile(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+        model.addAttribute("username", username);
+        
+        // Get user details
+        Optional<User> userOpt = userService.getUserByUsername(username);
+        if (userOpt.isPresent()) {
+            User user = userOpt.get();
+            model.addAttribute("user", user);
+            model.addAttribute("userRole", user.getRoles().contains(User.UserRole.ROLE_ADMIN) ? "System Administrator" : "User");
+        } else {
+            model.addAttribute("userRole", "Administrator");
+        }
+        
+        return "admin/profile";
     }
 }

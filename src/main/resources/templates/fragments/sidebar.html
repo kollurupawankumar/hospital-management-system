@@ -1,259 +1,1224 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
 <body>
-    <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="sidebar">
+    <!-- Sidebar Fragment -->
+    <div th:fragment="sidebar(activeModule)" class="sidebar d-md-block" style="width: 260px; height: calc(100vh - 56px); overflow-y: auto; background-color: #2c3e50; border-right: 1px solid #34495e;">
+        <div class="px-3 pt-3">
+            <ul class="nav flex-column">
+                <!-- Main Dashboard -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link" th:href="@{/dashboard}" th:classappend="${activeModule == 'main'} ? 'active' : ''">
+                        <i class="fas fa-tachometer-alt me-2"></i> Main Dashboard
+                    </a>
+                </li>
+                
+                <!-- Patient Management -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#patientSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'patient'} ? 'true' : 'false'" aria-controls="patientSubmenu"
+                       onclick="console.log('Patient header clicked!'); 
+                                var submenu = document.getElementById('patientSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ EXPANDED'); 
+                                    } 
+                                } 
+                                return false;"
+                       id="patientToggle">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-user-injured"></i>
+                            </div>
+                            <span class="sidebar-text">Patient Management</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'patient'} ? 'show' : ''" id="patientSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../patients'); return false;">
+                                    <i class="fas fa-list me-2"></i> All Patients
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../patients/new'); return false;">
+                                    <i class="fas fa-user-plus me-2"></i> Add Patient
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../patients/search'); return false;">
+                                    <i class="fas fa-search me-2"></i> Search
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../patients/reports'); return false;">
+                                    <i class="fas fa-chart-bar me-2"></i> Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../patients/emergency'); return false;">
+                                    <i class="fas fa-ambulance me-2"></i> Emergency
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        <!-- Sidebar - Brand -->
-        <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/">
-            <div class="sidebar-brand-icon rotate-n-15">
-                <i class="fas fa-hospital"></i>
-            </div>
-            <div class="sidebar-brand-text mx-3">HMS</div>
-        </a>
+                <!-- Doctor Management -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#doctorSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'doctor'} ? 'true' : 'false'" aria-controls="doctorSubmenu"
+                       onclick="console.log('Doctor header clicked!'); 
+                                var submenu = document.getElementById('doctorSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ DOCTOR COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ DOCTOR EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <span class="sidebar-text">Doctor Management</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'doctor'} ? 'show' : ''" id="doctorSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../doctors/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../doctors'); return false;">
+                                    <i class="fas fa-list me-2"></i> All Doctors
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../doctors/new'); return false;">
+                                    <i class="fas fa-user-plus me-2"></i> Add Doctor
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../doctors/schedules'); return false;">
+                                    <i class="fas fa-calendar-alt me-2"></i> Schedules
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider my-0">
+                <!-- Nurse Management -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#nurseSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'nurse'} ? 'true' : 'false'" aria-controls="nurseSubmenu"
+                       onclick="console.log('Nurse header clicked!'); 
+                                var submenu = document.getElementById('nurseSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ NURSE COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ NURSE EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-user-nurse"></i>
+                            </div>
+                            <span class="sidebar-text">Nurse Management</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'nurse'} ? 'show' : ''" id="nurseSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../nurses/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../nurses'); return false;">
+                                    <i class="fas fa-list me-2"></i> All Nurses
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../nurses/new'); return false;">
+                                    <i class="fas fa-user-plus me-2"></i> Add Nurse
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../nurses/tasks'); return false;">
+                                    <i class="fas fa-tasks me-2"></i> Tasks
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        <!-- Nav Item - Dashboard -->
-        <li class="nav-item">
-            <a class="nav-link" href="/">
-                <i class="fas fa-fw fa-tachometer-alt"></i>
-                <span>Dashboard</span>
-            </a>
-        </li>
+                <!-- Appointments -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#appointmentSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'appointment'} ? 'true' : 'false'" aria-controls="appointmentSubmenu"
+                       onclick="console.log('Appointment header clicked!'); 
+                                var submenu = document.getElementById('appointmentSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ APPOINTMENT COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ APPOINTMENT EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-calendar-check"></i>
+                            </div>
+                            <span class="sidebar-text">Appointments</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'appointment'} ? 'show' : ''" id="appointmentSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../appointments'); return false;">
+                                    <i class="fas fa-list me-2"></i> All Appointments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../appointments/new'); return false;">
+                                    <i class="fas fa-plus me-2"></i> Schedule
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../appointments/calendar'); return false;">
+                                    <i class="fas fa-calendar me-2"></i> Calendar
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+                <!-- Billing & Finance -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#billingSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'billing'} ? 'true' : 'false'" aria-controls="billingSubmenu"
+                       onclick="console.log('Billing header clicked!'); 
+                                var submenu = document.getElementById('billingSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ BILLING COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ BILLING EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                            </div>
+                            <span class="sidebar-text">Billing & Finance</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'billing'} ? 'show' : ''" id="billingSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../billing/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../billing/invoices'); return false;">
+                                    <i class="fas fa-file-invoice me-2"></i> Invoices
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../billing/payments'); return false;">
+                                    <i class="fas fa-credit-card me-2"></i> Payments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../billing/reports'); return false;">
+                                    <i class="fas fa-chart-line me-2"></i> Reports
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Patient Care
+                <!-- Laboratory -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#labSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'lab'} ? 'true' : 'false'" aria-controls="labSubmenu"
+                       onclick="console.log('Laboratory header clicked!'); 
+                                var submenu = document.getElementById('labSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ LABORATORY COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ LABORATORY EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-flask"></i>
+                            </div>
+                            <span class="sidebar-text">Laboratory</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'lab'} ? 'show' : ''" id="labSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/orders'); return false;">
+                                    <i class="fas fa-list-alt me-2"></i> Orders
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/results'); return false;">
+                                    <i class="fas fa-vial me-2"></i> Results
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/tests'); return false;">
+                                    <i class="fas fa-microscope me-2"></i> Tests
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Pharmacy -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#pharmacySubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'pharmacy'} ? 'true' : 'false'" aria-controls="pharmacySubmenu"
+                       onclick="console.log('Pharmacy header clicked!'); 
+                                var submenu = document.getElementById('pharmacySubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ PHARMACY COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ PHARMACY EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-pills"></i>
+                            </div>
+                            <span class="sidebar-text">Pharmacy</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'pharmacy'} ? 'show' : ''" id="pharmacySubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/medicines'); return false;">
+                                    <i class="fas fa-capsules me-2"></i> Medicines
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/prescriptions'); return false;">
+                                    <i class="fas fa-prescription me-2"></i> Prescriptions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/billing'); return false;">
+                                    <i class="fas fa-cash-register me-2"></i> Billing
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Inventory -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#inventorySubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'inventory'} ? 'true' : 'false'" aria-controls="inventorySubmenu"
+                       onclick="console.log('Inventory header clicked!'); 
+                                var submenu = document.getElementById('inventorySubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ INVENTORY COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ INVENTORY EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-boxes"></i>
+                            </div>
+                            <span class="sidebar-text">Inventory</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'inventory'} ? 'show' : ''" id="inventorySubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/items'); return false;">
+                                    <i class="fas fa-box me-2"></i> Items
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/orders'); return false;">
+                                    <i class="fas fa-shopping-cart me-2"></i> Orders
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/suppliers'); return false;">
+                                    <i class="fas fa-truck me-2"></i> Suppliers
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Inpatient Care -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#inpatientSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'inpatient'} ? 'true' : 'false'" aria-controls="inpatientSubmenu"
+                       onclick="console.log('Inpatient header clicked!'); 
+                                var submenu = document.getElementById('inpatientSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ INPATIENT COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ INPATIENT EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-bed"></i>
+                            </div>
+                            <span class="sidebar-text">Inpatient Care</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'inpatient'} ? 'show' : ''" id="inpatientSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/dashboard}" onclick="loadContent('../inpatient/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/admissions}" onclick="loadContent('../inpatient/admissions'); return false;">
+                                    <i class="fas fa-hospital-user me-2"></i> Admissions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/wards}" onclick="loadContent('../inpatient/wards'); return false;">
+                                    <i class="fas fa-building me-2"></i> Wards
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/beds}" onclick="loadContent('../inpatient/beds'); return false;">
+                                    <i class="fas fa-bed me-2"></i> Beds
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Reception -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#receptionSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'reception'} ? 'true' : 'false'" aria-controls="receptionSubmenu"
+                       onclick="console.log('Reception header clicked!'); 
+                                var submenu = document.getElementById('receptionSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ RECEPTION COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ RECEPTION EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-desk"></i>
+                            </div>
+                            <span class="sidebar-text">Reception</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'reception'} ? 'show' : ''" id="receptionSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/dashboard}" onclick="loadContent('/reception/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/registration}" onclick="loadContent('/reception/registration'); return false;">
+                                    <i class="fas fa-user-plus me-2"></i> Registration
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/tokens}" onclick="loadContent('/reception/tokens'); return false;">
+                                    <i class="fas fa-ticket-alt me-2"></i> Tokens
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/visitors}" onclick="loadContent('/reception/visitors'); return false;">
+                                    <i class="fas fa-users me-2"></i> Visitors
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Administration -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#adminSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'admin'} ? 'true' : 'false'" aria-controls="adminSubmenu"
+                       onclick="console.log('Administration header clicked!'); 
+                                var submenu = document.getElementById('adminSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ ADMINISTRATION COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ ADMINISTRATION EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-user-shield"></i>
+                            </div>
+                            <span class="sidebar-text">Administration</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'admin'} ? 'show' : ''" id="adminSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/dashboard}" th:classappend="${activeModule == 'admin'} ? 'active' : ''" onclick="loadContent('/admin/dashboard'); return false;">
+                                    <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/users}" onclick="loadContent('/admin/users'); return false;">
+                                    <i class="fas fa-users-cog me-2"></i> Users
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/roles}" onclick="loadContent('/admin/roles'); return false;">
+                                    <i class="fas fa-user-tag me-2"></i> Roles
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/departments}" onclick="loadContent('/admin/departments'); return false;">
+                                    <i class="fas fa-sitemap me-2"></i> Departments
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- System Settings -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#settingsSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'settings'} ? 'true' : 'false'" aria-controls="settingsSubmenu"
+                       onclick="console.log('Settings header clicked!'); 
+                                var submenu = document.getElementById('settingsSubmenu'); 
+                                var arrow = this.querySelector('.sidebar-arrow');
+                                if (submenu) { 
+                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
+                                        submenu.style.display = 'none'; 
+                                        submenu.classList.remove('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
+                                        console.log('✅ SETTINGS COLLAPSED'); 
+                                    } else { 
+                                        submenu.style.display = 'block'; 
+                                        submenu.classList.add('show'); 
+                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
+                                        console.log('✅ SETTINGS EXPANDED'); 
+                                    } 
+                                } 
+                                return false;">
+                        <div class="d-flex align-items-center">
+                            <div class="sidebar-icon-container me-2">
+                                <i class="fas fa-cogs"></i>
+                            </div>
+                            <span class="sidebar-text">System Settings</span>
+                            <i class="fas fa-chevron-down sidebar-arrow ms-auto"></i>
+                        </div>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'settings'} ? 'show' : ''" id="settingsSubmenu">
+                        <ul class="nav flex-column sidebar-submenu">
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/general}" onclick="loadContent('/settings/general'); return false;">
+                                    <i class="fas fa-cog me-2"></i> General
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/backup}" onclick="loadContent('/settings/backup'); return false;">
+                                    <i class="fas fa-database me-2"></i> Backup
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/security}" onclick="loadContent('/settings/security'); return false;">
+                                    <i class="fas fa-shield-alt me-2"></i> Security
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/notifications}" onclick="loadContent('/settings/notifications'); return false;">
+                                    <i class="fas fa-bell me-2"></i> Notifications
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+
+                <!-- Reports -->
+                <li class="nav-item mb-2">
+                    <a class="nav-link" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'reports'} ? 'true' : 'false'" aria-controls="reportsSubmenu">
+                        <i class="fas fa-chart-bar me-2"></i> Reports
+                        <i class="fas fa-chevron-down float-end mt-1"></i>
+                    </a>
+                    <div class="collapse" th:classappend="${activeModule == 'reports'} ? 'show' : ''" id="reportsSubmenu">
+                        <ul class="nav flex-column ms-3">
+                            <li class="nav-item">
+                                <a class="nav-link py-1" th:href="@{/reports/patient}">
+                                    <i class="fas fa-user-injured me-2"></i> Patient Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-1" th:href="@{/reports/financial}">
+                                    <i class="fas fa-dollar-sign me-2"></i> Financial Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-1" th:href="@{/reports/operational}">
+                                    <i class="fas fa-chart-line me-2"></i> Operational Reports
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link py-1" th:href="@{/reports/custom}">
+                                    <i class="fas fa-file-alt me-2"></i> Custom Reports
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
         </div>
+    </div>
 
-        <!-- Nav Item - Patient Management -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePatient"
-                aria-expanded="true" aria-controls="collapsePatient">
-                <i class="fas fa-fw fa-user-injured"></i>
-                <span>Patient Management</span>
-            </a>
-            <div id="collapsePatient" class="collapse" aria-labelledby="headingPatient" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Patient Options:</h6>
-                    <a class="collapse-item" href="/patients">All Patients</a>
-                    <a class="collapse-item" href="/patients/new">Register Patient</a>
-                    <a class="collapse-item" href="/patients/search">Search Patients</a>
+    <!-- Sidebar CSS -->
+    <style th:fragment="sidebarCSS">
+        .main-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        
+        .sidebar {
+            position: fixed;
+            top: 56px; /* Height of navbar */
+            left: 0;
+            z-index: 100;
+            width: 260px;
+        }
+        
+        .content-wrapper {
+            margin-left: 260px; /* Width of sidebar */
+            padding: 0;
+            width: calc(100% - 260px);
+            min-height: calc(100vh - 56px);
+            background-color: #f8f9fa;
+        }
+        
+        .content-area {
+            padding: 20px;
+            background-color: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            min-height: calc(100vh - 136px);
+        }
+        
+        .sidebar .nav-link {
+            color: #bdc3c7;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 3px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sidebar .nav-link:hover {
+            background-color: #34495e;
+            color: #3498db;
+            transform: translateX(3px);
+        }
+        
+        .sidebar .nav-link.active {
+            background-color: #3498db;
+            color: white;
+            box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+        }
+        
+        .sidebar .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 8px;
+        }
+        
+        .sidebar .collapse .nav-link {
+            font-size: 0.85rem;
+            padding: 8px 15px 8px 35px;
+            color: #95a5a6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .sidebar .collapse .nav-link:hover {
+            color: #3498db;
+            background-color: #34495e;
+        }
+        
+        .sidebar .collapse .nav-link.active {
+            background-color: #2980b9;
+            color: white;
+        }
+        
+        /* Chevron rotation animation */
+        .sidebar .nav-link[aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        .sidebar .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        
+        /* Custom scrollbar for sidebar */
+        .sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .sidebar::-webkit-scrollbar-track {
+            background: #2c3e50;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb {
+            background: #34495e;
+            border-radius: 3px;
+        }
+        
+        .sidebar::-webkit-scrollbar-thumb:hover {
+            background: #4a5f7a;
+        }
+        
+        /* Enhanced Sidebar Styles */
+        .sidebar-section-header {
+            color: #ecf0f1 !important;
+            padding: 12px 15px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, rgba(52, 73, 94, 0.3), rgba(44, 62, 80, 0.3));
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .sidebar-section-header:hover {
+            background: linear-gradient(135deg, rgba(52, 152, 219, 0.2), rgba(41, 128, 185, 0.2));
+            color: #3498db !important;
+            transform: translateX(3px);
+        }
+        
+        .sidebar-icon-container {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(52, 152, 219, 0.2);
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-section-header:hover .sidebar-icon-container {
+            background: rgba(52, 152, 219, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .sidebar-text {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .sidebar-arrow {
+            font-size: 0.8rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .sidebar-section-header[aria-expanded="true"] .sidebar-arrow {
+            transform: rotate(180deg);
+        }
+        
+        .sidebar-submenu {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            padding: 8px 0;
+            margin: 5px 15px;
+            border-left: 3px solid #3498db;
+        }
+        
+        .sidebar-sublink {
+            color: #bdc3c7 !important;
+            padding: 8px 15px;
+            text-decoration: none;
+            border-radius: 6px;
+            margin: 2px 8px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+        
+        .sidebar-sublink:hover {
+            background: rgba(52, 152, 219, 0.15);
+            color: #3498db !important;
+            transform: translateX(5px);
+            box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        .sidebar-sublink:hover small {
+            color: #3498db !important;
+        }
+        
+        .sidebar-sublink small {
+            font-size: 0.7rem;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+        
+        .sidebar-sublink i {
+            width: 16px;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .content-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+            
+            .content-area {
+                margin: 10px;
+                min-height: calc(100vh - 116px);
+            }
+        }
+    </style>
+
+    <!-- Sidebar JavaScript -->
+    <script th:fragment="sidebarJS">
+        // Sidebar toggle for mobile
+        document.addEventListener('DOMContentLoaded', function() {
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            if (sidebarToggle) {
+                sidebarToggle.addEventListener('click', function() {
+                    const sidebar = document.querySelector('.sidebar');
+                    sidebar.classList.toggle('show');
+                });
+            }
+
+            // Close sidebar when clicking outside on mobile
+            document.addEventListener('click', function(event) {
+                const sidebar = document.querySelector('.sidebar');
+                const toggleBtn = document.getElementById('sidebarToggle');
+                
+                if (window.innerWidth <= 768 && 
+                    sidebar && toggleBtn &&
+                    !sidebar.contains(event.target) && 
+                    !toggleBtn.contains(event.target)) {
+                    sidebar.classList.remove('show');
+                }
+            });
+
+            // SPA-like navigation
+            setupSPANavigation();
+        });
+
+        function setupSPANavigation() {
+            // Get all navigation links in sidebar
+            const navLinks = document.querySelectorAll('.sidebar .nav-link[href]:not([data-bs-toggle])');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const url = this.getAttribute('href');
+                    if (url && url !== '#' && !url.startsWith('javascript:')) {
+                        loadContent(url);
+                        
+                        // Update active state
+                        document.querySelectorAll('.sidebar .nav-link').forEach(l => l.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Update URL without page reload
+                        history.pushState({url: url}, '', url);
+                    }
+                });
+            });
+        }
+
+        function loadContent(url) {
+            console.log('🚀 loadContent called with URL:', url);
+            const contentArea = document.getElementById('main-content');
+            if (!contentArea) {
+                console.error('❌ Content area not found - looking for element with id="main-content"');
+                console.log('Available elements:', document.querySelectorAll('[id*="content"], [class*="content"]'));
+                return;
+            }
+            console.log('✅ Content area found:', contentArea);
+
+            // Show loading spinner
+            contentArea.innerHTML = `
+                <div class="d-flex justify-content-center align-items-center" style="height: 400px;">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <span class="ms-3">Loading content...</span>
                 </div>
-            </div>
-        </li>
+            `;
 
-        <!-- Nav Item - Appointments -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseAppointments"
-                aria-expanded="true" aria-controls="collapseAppointments">
-                <i class="fas fa-fw fa-calendar-check"></i>
-                <span>Appointments</span>
-            </a>
-            <div id="collapseAppointments" class="collapse" aria-labelledby="headingAppointments" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Appointment Options:</h6>
-                    <a class="collapse-item" href="/appointments">All Appointments</a>
-                    <a class="collapse-item" href="/appointments/new">Schedule Appointment</a>
-                    <a class="collapse-item" href="/appointments/today">Today's Appointments</a>
-                </div>
-            </div>
-        </li>
+            // Fetch content via AJAX
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(html => {
+                // Extract content from the response
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                
+                // Try to find the main content area in the response
+                // Look for layout:fragment="content" or common content containers
+                let content = doc.querySelector('[layout\\:fragment="content"]');
+                if (!content) {
+                    content = doc.querySelector('.content-wrapper, .container-fluid, main, .main-content');
+                }
+                if (!content) {
+                    // If still no content found, try to get the body content excluding nav and footer
+                    const body = doc.querySelector('body');
+                    if (body) {
+                        // Remove navigation and footer elements
+                        const nav = body.querySelector('nav');
+                        const footer = body.querySelector('footer');
+                        if (nav) nav.remove();
+                        if (footer) footer.remove();
+                        content = body;
+                    }
+                }
+                
+                if (content) {
+                    // Clean up the content - remove any scripts that might interfere
+                    const scripts = content.querySelectorAll('script');
+                    scripts.forEach(script => {
+                        if (!script.src || script.src.includes('bootstrap') || script.src.includes('jquery')) {
+                            // Keep essential scripts, remove others
+                        } else {
+                            script.remove();
+                        }
+                    });
+                    
+                    contentArea.innerHTML = content.innerHTML;
+                    
+                    // Re-initialize any JavaScript components if needed
+                    initializePageComponents();
+                    
+                    // Make sure any forms in the loaded content also use AJAX
+                    setupAjaxForms();
+                } else {
+                    contentArea.innerHTML = '<div class="alert alert-warning">Content could not be loaded.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error loading content:', error);
+                contentArea.innerHTML = `
+                    <div class="alert alert-danger">
+                        <h5>Error Loading Content</h5>
+                        <p>Failed to load the requested page. Please try again or refresh the page.</p>
+                        <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
+                    </div>
+                `;
+            });
+        }
 
-        <!-- Nav Item - OPD -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseOPD"
-                aria-expanded="true" aria-controls="collapseOPD">
-                <i class="fas fa-fw fa-stethoscope"></i>
-                <span>OPD</span>
-            </a>
-            <div id="collapseOPD" class="collapse" aria-labelledby="headingOPD" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">OPD Options:</h6>
-                    <a class="collapse-item" href="/opd/visits">All Visits</a>
-                    <a class="collapse-item" href="/opd/visits/new">New Visit</a>
-                    <a class="collapse-item" href="/opd/visits/today">Today's Visits</a>
-                </div>
-            </div>
-        </li>
+        function setupAjaxForms() {
+            // Setup AJAX for any forms in the loaded content
+            const forms = document.querySelectorAll('#main-content form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(form);
+                    const url = form.action;
+                    const method = form.method || 'GET';
+                    
+                    if (method.toLowerCase() === 'get') {
+                        // For GET requests, append form data to URL
+                        const params = new URLSearchParams(formData);
+                        const fullUrl = url + (url.includes('?') ? '&' : '?') + params.toString();
+                        loadContent(fullUrl);
+                    } else {
+                        // For POST requests, send form data
+                        fetch(url, {
+                            method: method,
+                            body: formData,
+                            headers: {
+                                'Accept': 'text/html'
+                            }
+                        })
+                        .then(response => response.text())
+                        .then(html => {
+                            const parser = new DOMParser();
+                            const doc = parser.parseFromString(html, 'text/html');
+                            let content = doc.querySelector('[layout\\:fragment="content"]');
+                            if (!content) {
+                                content = doc.querySelector('.content-wrapper, .container-fluid, main');
+                            }
+                            if (content) {
+                                document.getElementById('main-content').innerHTML = content.innerHTML;
+                                initializePageComponents();
+                                setupAjaxForms();
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Form submission error:', error);
+                        });
+                    }
+                });
+            });
+            
+            // Setup AJAX for any links in the loaded content
+            const links = document.querySelectorAll('#main-content a[href]:not([target="_blank"]):not([href^="mailto:"]):not([href^="tel:"])');
+            links.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href !== '#' && !href.startsWith('javascript:') && !href.startsWith('http')) {
+                        e.preventDefault();
+                        loadContent(href);
+                    }
+                });
+            });
+        }
 
-        <!-- Nav Item - IPD -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseIPD"
-                aria-expanded="true" aria-controls="collapseIPD">
-                <i class="fas fa-fw fa-procedures"></i>
-                <span>IPD</span>
-            </a>
-            <div id="collapseIPD" class="collapse" aria-labelledby="headingIPD" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">IPD Options:</h6>
-                    <a class="collapse-item" href="/ipd/admissions">All Admissions</a>
-                    <a class="collapse-item" href="/ipd/admissions/new">New Admission</a>
-                    <a class="collapse-item" href="/ipd/admissions/current">Current Patients</a>
-                    <a class="collapse-item" href="/ipd/wards">Ward Management</a>
-                </div>
-            </div>
-        </li>
+        function initializePageComponents() {
+            // Re-initialize Bootstrap components
+            if (typeof bootstrap !== 'undefined') {
+                // Initialize tooltips
+                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                });
 
-        <!-- Divider -->
-        <hr class="sidebar-divider">
+                // Initialize popovers
+                const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                popoverTriggerList.map(function (popoverTriggerEl) {
+                    return new bootstrap.Popover(popoverTriggerEl);
+                });
+            }
 
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Clinical Services
-        </div>
+            // Setup AJAX for newly loaded content
+            setupAjaxForms();
 
-        <!-- Nav Item - Laboratory -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseLaboratory"
-                aria-expanded="true" aria-controls="collapseLaboratory">
-                <i class="fas fa-fw fa-flask"></i>
-                <span>Laboratory</span>
-            </a>
-            <div id="collapseLaboratory" class="collapse" aria-labelledby="headingLaboratory" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Laboratory Options:</h6>
-                    <a class="collapse-item" href="/laboratory/orders">Test Orders</a>
-                    <a class="collapse-item" href="/laboratory/orders/pending">Pending Orders</a>
-                    <a class="collapse-item" href="/laboratory/tests">Test Catalog</a>
-                    <a class="collapse-item" href="/laboratory/results">Test Results</a>
-                </div>
-            </div>
-        </li>
+            // Re-initialize any custom JavaScript components
+            if (typeof initializeCustomComponents === 'function') {
+                initializeCustomComponents();
+            }
+        }
 
-        <!-- Nav Item - Radiology -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseRadiology"
-                aria-expanded="true" aria-controls="collapseRadiology">
-                <i class="fas fa-fw fa-x-ray"></i>
-                <span>Radiology</span>
-            </a>
-            <div id="collapseRadiology" class="collapse" aria-labelledby="headingRadiology" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Radiology Options:</h6>
-                    <a class="collapse-item" href="/radiology/orders">Imaging Orders</a>
-                    <a class="collapse-item" href="/radiology/orders/pending">Pending Orders</a>
-                    <a class="collapse-item" href="/radiology/procedures">Procedure Catalog</a>
-                    <a class="collapse-item" href="/radiology/results">Imaging Results</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Nav Item - Pharmacy -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePharmacy"
-                aria-expanded="true" aria-controls="collapsePharmacy">
-                <i class="fas fa-fw fa-pills"></i>
-                <span>Pharmacy</span>
-            </a>
-            <div id="collapsePharmacy" class="collapse" aria-labelledby="headingPharmacy" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Pharmacy Options:</h6>
-                    <a class="collapse-item" href="/pharmacy/prescriptions">Prescriptions</a>
-                    <a class="collapse-item" href="/pharmacy/prescriptions/pending">Pending Prescriptions</a>
-                    <a class="collapse-item" href="/pharmacy/medications">Medication Catalog</a>
-                    <a class="collapse-item" href="/pharmacy/dispensing">Medication Dispensing</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider">
-
-        <!-- Heading -->
-        <div class="sidebar-heading">
-            Administration
-        </div>
-
-        <!-- Nav Item - Billing -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseBilling"
-                aria-expanded="true" aria-controls="collapseBilling">
-                <i class="fas fa-fw fa-file-invoice-dollar"></i>
-                <span>Billing</span>
-            </a>
-            <div id="collapseBilling" class="collapse" aria-labelledby="headingBilling" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Billing Options:</h6>
-                    <a class="collapse-item" href="/billing/invoices">Invoices</a>
-                    <a class="collapse-item" href="/billing/invoices/new">Create Invoice</a>
-                    <a class="collapse-item" href="/billing/payments">Payments</a>
-                    <a class="collapse-item" href="/billing/insurance-claims">Insurance Claims</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Nav Item - Inventory -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory"
-                aria-expanded="true" aria-controls="collapseInventory">
-                <i class="fas fa-fw fa-boxes"></i>
-                <span>Inventory</span>
-            </a>
-            <div id="collapseInventory" class="collapse" aria-labelledby="headingInventory" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">Inventory Options:</h6>
-                    <a class="collapse-item" href="/inventory/dashboard">Dashboard</a>
-                    <a class="collapse-item" href="/inventory/items">Items</a>
-                    <a class="collapse-item" href="/inventory/suppliers">Suppliers</a>
-                    <a class="collapse-item" href="/inventory/purchase-orders">Purchase Orders</a>
-                    <a class="collapse-item" href="/inventory/stock-transfers">Stock Transfers</a>
-                    <a class="collapse-item" href="/inventory/assets">Assets</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Nav Item - HR -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseHR"
-                aria-expanded="true" aria-controls="collapseHR">
-                <i class="fas fa-fw fa-users"></i>
-                <span>Human Resources</span>
-            </a>
-            <div id="collapseHR" class="collapse" aria-labelledby="headingHR" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">HR Options:</h6>
-                    <a class="collapse-item" href="/hr/employees">Employees</a>
-                    <a class="collapse-item" href="/hr/doctors">Doctors</a>
-                    <a class="collapse-item" href="/hr/nurses">Nurses</a>
-                    <a class="collapse-item" href="/hr/departments">Departments</a>
-                    <a class="collapse-item" href="/hr/schedules">Staff Schedules</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Nav Item - Settings -->
-        <li class="nav-item">
-            <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseSettings"
-                aria-expanded="true" aria-controls="collapseSettings">
-                <i class="fas fa-fw fa-cog"></i>
-                <span>Settings</span>
-            </a>
-            <div id="collapseSettings" class="collapse" aria-labelledby="headingSettings" data-parent="#accordionSidebar">
-                <div class="bg-white py-2 collapse-inner rounded">
-                    <h6 class="collapse-header">System Settings:</h6>
-                    <a class="collapse-item" href="/settings/users">User Management</a>
-                    <a class="collapse-item" href="/settings/roles">Role Management</a>
-                    <a class="collapse-item" href="/settings/hospital">Hospital Settings</a>
-                    <a class="collapse-item" href="/settings/system">System Configuration</a>
-                </div>
-            </div>
-        </li>
-
-        <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block">
-
-        <!-- Sidebar Toggler (Sidebar) -->
-        <div class="text-center d-none d-md-inline">
-            <button class="rounded-circle border-0" id="sidebarToggle"></button>
-        </div>
-
-    </ul>
-    <!-- End of Sidebar -->
+        // Handle browser back/forward buttons
+        window.addEventListener('popstate', function(event) {
+            if (event.state && event.state.url) {
+                loadContent(event.state.url);
+            }
+        });
+        
+        // Toggle sidebar section function
+        function toggleSidebarSection(targetId, toggleElement) {
+            console.log('=== TOGGLE FUNCTION CALLED ===');
+            console.log('Target ID:', targetId);
+            console.log('Toggle Element:', toggleElement);
+            
+            const target = document.getElementById(targetId);
+            const arrow = toggleElement.querySelector('.sidebar-arrow');
+            
+            console.log('Target found:', target);
+            console.log('Arrow found:', arrow);
+            
+            if (target) {
+                const isCurrentlyShown = target.classList.contains('show');
+                console.log('Currently shown:', isCurrentlyShown);
+                
+                if (isCurrentlyShown) {
+                    // Hide
+                    target.classList.remove('show');
+                    target.style.display = 'none';
+                    toggleElement.setAttribute('aria-expanded', 'false');
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(0deg)';
+                        arrow.style.transition = 'transform 0.3s ease';
+                    }
+                    console.log('✅ COLLAPSED:', targetId);
+                } else {
+                    // Show
+                    target.classList.add('show');
+                    target.style.display = 'block';
+                    toggleElement.setAttribute('aria-expanded', 'true');
+                    if (arrow) {
+                        arrow.style.transform = 'rotate(180deg)';
+                        arrow.style.transition = 'transform 0.3s ease';
+                    }
+                    console.log('✅ EXPANDED:', targetId);
+                }
+            } else {
+                console.error('❌ Target element not found:', targetId);
+            }
+        }
+        
+        // Make functions globally available
+        window.loadContent = loadContent;
+        window.setupAjaxForms = setupAjaxForms;
+        window.initializePageComponents = initializePageComponents;
+        window.toggleSidebarSection = toggleSidebarSection;
+        
+        // Debug: Confirm functions are loaded
+        console.log('✅ Sidebar JS loaded - loadContent function available:', typeof window.loadContent);
+        console.log('✅ All sidebar functions loaded successfully');
+    </script>
 </body>
 </html>
