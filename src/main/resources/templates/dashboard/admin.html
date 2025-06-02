@@ -23,6 +23,7 @@
         .navbar {
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             backdrop-filter: blur(10px);
+            overflow: visible !important; /* Allow dropdown to extend outside navbar */
         }
         
         .user-avatar {
@@ -33,43 +34,213 @@
             transform: scale(1.05);
         }
         
+        /* Professional Dropdown Styling */
         .dropdown-menu {
-            border: none;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-            border-radius: 8px;
-            padding: 0.5rem 0;
+            border: none !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+            border-radius: 12px !important;
+            padding: 0 !important;
+            min-width: 280px !important;
+            max-width: 280px !important;
+            width: 280px !important;
+            margin-top: 8px !important;
+            background: white !important;
+            overflow: visible !important;
+            position: absolute !important;
+            top: 100% !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 9999 !important; /* Higher z-index to ensure it appears above everything */
+            transform: none !important;
         }
         
+        .dropdown-menu.show {
+            display: block !important;
+            opacity: 1 !important;
+            visibility: visible !important;
+            transform: translateY(0) !important;
+        }
+        
+        .dropdown-menu:not(.show) {
+            display: none !important;
+            opacity: 0 !important;
+            visibility: hidden !important;
+            transform: translateY(-10px) !important;
+        }
+        
+        /* Ensure dropdown positioning */
+        .nav-item.dropdown {
+            position: relative !important;
+            overflow: visible !important; /* Allow dropdown to extend outside */
+        }
+        
+        /* Ensure navbar container allows overflow */
+        .navbar .container-fluid {
+            overflow: visible !important;
+        }
+        
+        .navbar-collapse {
+            overflow: visible !important;
+        }
+        
+        .navbar-nav {
+            overflow: visible !important;
+        }
+        
+        /* Dropdown Header */
+        .dropdown-header {
+            padding: 1.5rem 1.5rem 1rem 1.5rem !important;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+            color: white !important;
+            border-radius: 12px 12px 0 0 !important;
+            margin: 0 !important;
+            border: none !important;
+            font-size: inherit !important;
+            white-space: normal !important;
+        }
+        
+        .dropdown-header .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid rgba(255,255,255,0.3);
+        }
+        
+        .dropdown-header .fw-bold {
+            font-size: 1.1rem;
+            margin-bottom: 2px;
+        }
+        
+        .dropdown-header small {
+            opacity: 0.9;
+            font-size: 0.85rem;
+        }
+        
+        /* Dropdown Items */
         .dropdown-item {
-            padding: 0.5rem 1rem;
-            transition: all 0.2s ease;
+            padding: 0.75rem 1.5rem !important;
+            transition: all 0.2s ease !important;
+            border: none !important;
+            display: flex !important;
+            align-items: center !important;
+            color: #495057 !important;
+            font-size: 0.95rem !important;
+            text-decoration: none !important;
+            background: transparent !important;
+            width: 100% !important;
         }
         
         .dropdown-item:hover {
-            background-color: #f8f9fa;
-            transform: translateX(2px);
+            background-color: #f8f9fa !important;
+            color: #495057 !important;
+            transform: translateX(3px) !important;
+            text-decoration: none !important;
         }
         
-        .dropdown-header {
-            padding: 1rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 8px 8px 0 0;
-            margin: -0.5rem -0rem 0.5rem -0rem;
+        .dropdown-item:focus {
+            background-color: #e9ecef !important;
+            color: #495057 !important;
+            text-decoration: none !important;
         }
         
-        /* Ensure dropdown menu works */
+        .dropdown-item i {
+            width: 20px;
+            text-align: center;
+            margin-right: 12px;
+            color: #6c757d;
+        }
+        
+        .dropdown-item:hover i {
+            color: #495057;
+        }
+        
+        /* Divider */
+        .dropdown-divider {
+            margin: 0.5rem 0;
+            border-color: #e9ecef;
+        }
+        
+        /* Logout item special styling */
+        .dropdown-item.text-danger {
+            color: #dc3545 !important;
+        }
+        
+        .dropdown-item.text-danger:hover {
+            background-color: #f8d7da;
+            color: #721c24 !important;
+        }
+        
+        .dropdown-item.text-danger i {
+            color: #dc3545 !important;
+        }
+        
+        /* Dropdown animation */
+        @keyframes dropdownFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
         .dropdown-menu.show {
-            display: block !important;
-            opacity: 1;
-            visibility: visible;
+            animation: dropdownFadeIn 0.3s ease;
         }
         
-        .dropdown-menu {
-            display: none;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.2s ease;
+        /* User avatar in dropdown header */
+        .dropdown-header .user-avatar {
+            background: rgba(255,255,255,0.2) !important;
+            border: 2px solid rgba(255,255,255,0.3) !important;
+            font-size: 1.2rem;
+        }
+        
+        /* Fix dropdown width issues */
+        #userDropdownMenu {
+            min-width: 280px !important;
+            max-width: 280px !important;
+            width: 280px !important;
+            left: auto !important;
+            right: 0 !important;
+            transform: none !important;
+            position: absolute !important;
+            top: calc(100% + 5px) !important; /* Position below the toggle with small gap */
+            z-index: 9999 !important;
+        }
+        
+        /* Prevent navbar interference */
+        .navbar-nav .dropdown-menu {
+            position: absolute !important;
+            top: calc(100% + 5px) !important; /* Position below with gap */
+            left: auto !important;
+            right: 0 !important;
+            float: none !important;
+            min-width: 280px !important;
+            max-width: 280px !important;
+            width: 280px !important;
+            transform: none !important;
+            margin: 0 !important;
+            z-index: 9999 !important;
+            overflow: visible !important;
+        }
+        
+        /* Override any Bootstrap navbar dropdown styles */
+        .navbar .dropdown-menu {
+            position: absolute !important;
+            inset: auto 0px auto auto !important;
+            margin: 0 !important;
+            transform: none !important;
+            top: calc(100% + 5px) !important;
+            z-index: 9999 !important;
+            overflow: visible !important;
+        }
+        
+        /* Ensure dropdown container doesn't stretch */
+        .navbar-nav .nav-item.dropdown {
+            position: relative !important;
+            width: auto !important;
         }
         
 
@@ -127,6 +298,34 @@
             margin-left: auto !important;
         }
         
+        /* Additional fixes for dropdown visibility */
+        .navbar-nav .nav-item.dropdown .dropdown-menu {
+            position: absolute !important;
+            top: calc(100% + 5px) !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 9999 !important;
+            transform: none !important;
+            margin: 0 !important;
+            overflow: visible !important;
+        }
+        
+        /* Ensure parent containers don't clip */
+        .navbar,
+        .navbar-collapse,
+        .navbar-nav,
+        .nav-item.dropdown {
+            overflow: visible !important;
+        }
+        
+        /* Force dropdown to appear above all content */
+        .dropdown-menu.show {
+            display: block !important;
+            position: absolute !important;
+            z-index: 9999 !important;
+            overflow: visible !important;
+        }
+        
         /* Mobile responsive adjustments */
         @media (max-width: 768px) {
             .user-info {
@@ -135,6 +334,8 @@
             
             .dropdown-menu {
                 width: 250px !important;
+                min-width: 250px !important;
+                max-width: 250px !important;
             }
         }
     </style>
@@ -292,8 +493,20 @@
                 
                 // Toggle this dropdown
                 if (!isShown) {
+                    // Force proper positioning
+                    dropdownMenu.style.position = 'absolute';
+                    dropdownMenu.style.top = 'calc(100% + 5px)';
+                    dropdownMenu.style.right = '0';
+                    dropdownMenu.style.left = 'auto';
+                    dropdownMenu.style.width = '280px';
+                    dropdownMenu.style.minWidth = '280px';
+                    dropdownMenu.style.maxWidth = '280px';
+                    dropdownMenu.style.zIndex = '9999';
+                    dropdownMenu.style.overflow = 'visible';
+                    dropdownMenu.style.transform = 'none';
+                    
                     dropdownMenu.classList.add('show');
-                    console.log('✅ Dropdown opened');
+                    console.log('✅ Dropdown opened with forced positioning');
                 } else {
                     dropdownMenu.classList.remove('show');
                     console.log('✅ Dropdown closed');
@@ -368,8 +581,8 @@
 </head>
 <body>
     <!-- Header with HMS Logo -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-        <div class="container-fluid">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top" style="overflow: visible !important;">
+        <div class="container-fluid" style="overflow: visible !important;">
             <!-- HMS Logo and Brand -->
             <a class="navbar-brand d-flex align-items-center" href="#" onclick="event.preventDefault(); loadContent('/dashboard'); return false;">
                 <div class="logo-container me-3">
@@ -390,11 +603,11 @@
             </button>
             
             <!-- Navbar Items -->
-            <div class="collapse navbar-collapse show" id="navbarNav">
+            <div class="collapse navbar-collapse show" id="navbarNav" style="overflow: visible !important;">
                 <!-- Push content to the right -->
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto" style="overflow: visible !important;">
                     <!-- User Profile Dropdown -->
-                    <li class="nav-item dropdown">
+                    <li class="nav-item dropdown" style="overflow: visible !important; position: relative !important;">
                         <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="toggleUserDropdown(event)" id="userDropdownToggle">
                             <!-- User Avatar Circle -->
                             <div class="user-avatar me-2" style="width: 32px; height: 32px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 0.9rem; border: 2px solid rgba(255,255,255,0.3);">
@@ -406,34 +619,37 @@
                                 <small class="user-role" style="font-size: 0.75rem; opacity: 0.8;">System Admin</small>
                             </div>
                         </a>
-                        <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu" style="min-width: 200px;">
+                        <ul class="dropdown-menu dropdown-menu-end" id="userDropdownMenu" style="position: absolute !important; top: calc(100% + 5px) !important; right: 0 !important; left: auto !important; z-index: 9999 !important; overflow: visible !important; transform: none !important; width: 280px !important; min-width: 280px !important; max-width: 280px !important;">
                             <li class="dropdown-header">
                                 <div class="d-flex align-items-center">
-                                    <div class="user-avatar me-2" style="width: 40px; height: 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold;">
+                                    <div class="user-avatar me-3">
                                         <span th:text="${#strings.substring(username, 0, 1).toUpperCase()}">A</span>
                                     </div>
                                     <div>
                                         <div class="fw-bold" th:text="${username}">Administrator</div>
-                                        <small class="text-muted">System Administrator</small>
+                                        <small>System Administrator</small>
                                     </div>
                                 </div>
                             </li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); loadContent('../profile'); return false;">
-                                <i class="fas fa-user me-2"></i>My Profile
+                            <li><a class="dropdown-item" href="#" onclick="loadContent('/profile'); return false;">
+                                <i class="fas fa-user"></i>My Profile
                             </a></li>
-                            <li><a class="dropdown-item" href="#" onclick="event.preventDefault(); loadContent('../admin/settings'); return false;">
-                                <i class="fas fa-cog me-2"></i>Account Settings
+                            <li><a class="dropdown-item" href="#" onclick="loadContent('/settings'); return false;">
+                                <i class="fas fa-cog"></i>Account Settings
                             </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                <i class="fas fa-shield-alt me-2"></i>Security
+                            <li><a class="dropdown-item" href="#" onclick="loadContent('/security'); return false;">
+                                <i class="fas fa-shield-alt"></i>Security & Privacy
                             </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                <i class="fas fa-question-circle me-2"></i>Help & Support
+                            <li><a class="dropdown-item" href="#" onclick="loadContent('/notifications'); return false;">
+                                <i class="fas fa-bell"></i>Notification Settings
+                            </a></li>
+                            <li><a class="dropdown-item" href="#" onclick="loadContent('/help'); return false;">
+                                <i class="fas fa-question-circle"></i>Help & Support
                             </a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a class="dropdown-item text-danger" href="#" onclick="confirmLogout(); return false;">
-                                <i class="fas fa-sign-out-alt me-2"></i>Sign Out
+                                <i class="fas fa-sign-out-alt"></i>Sign Out
                             </a></li>
                         </ul>
                     </li>
