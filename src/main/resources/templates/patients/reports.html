@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Patient Reports</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-chart-bar me-2 text-primary"></i>Patient Reports</h2>
+            <a th:href="@{/patients}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to Patients
+            </a>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-primary text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4 th:text="${totalPatients}">0</h4>
+                                <p class="mb-0">Total Patients</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-users fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>12</h4>
+                                <p class="mb-0">New This Month</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-user-plus fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>8</h4>
+                                <p class="mb-0">Pending Appointments</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>95%</h4>
+                                <p class="mb-0">Satisfaction Rate</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-smile fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Patient Registration Trend</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="registrationChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Age Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="ageChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Patients Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Patient Registrations</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Gender</th>
+                                <th>Phone</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="patient, iterStat : ${patients}" th:if="${iterStat.index < 10}">
+                                <td th:text="${patient.id}">1</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                            <i class="fas fa-user text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong th:text="${patient.firstName + ' ' + patient.lastName}">John Doe</strong>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="${patient.age}">35</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${patient.gender == 'MALE'} ? 'bg-primary' : 'bg-pink'"
+                                          th:text="${patient.gender}">Male</span>
+                                </td>
+                                <td th:text="${patient.phoneNumber}">+1234567890</td>
+                                <td th:text="${#temporals.format(patient.createdAt, 'MMM dd, yyyy')}">Jan 15, 2024</td>
+                                <td>
+                                    <span class="badge bg-success">Active</span>
+                                </td>
+                            </tr>
+                            <tr th:if="${patients.empty}">
+                                <td colspan="7" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-chart-bar fa-3x mb-3"></i>
+                                        <p>No patient data available for reports.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Export Options -->
+        <div class="card mt-4">
+            <div class="card-body">
+                <h5><i class="fas fa-download me-2"></i>Export Reports</h5>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-primary" onclick="alert('PDF export coming soon!')">
+                        <i class="fas fa-file-pdf me-2"></i>Export PDF
+                    </button>
+                    <button class="btn btn-outline-success" onclick="alert('Excel export coming soon!')">
+                        <i class="fas fa-file-excel me-2"></i>Export Excel
+                    </button>
+                    <button class="btn btn-outline-info" onclick="alert('CSV export coming soon!')">
+                        <i class="fas fa-file-csv me-2"></i>Export CSV
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        // Simple chart placeholders - you can integrate Chart.js or other charting libraries
+        document.addEventListener('DOMContentLoaded', function() {
+            // Registration Chart
+            const regCtx = document.getElementById('registrationChart');
+            if (regCtx) {
+                const ctx = regCtx.getContext('2d');
+                ctx.fillStyle = '#0d6efd';
+                ctx.fillRect(50, 150, 30, 50);
+                ctx.fillRect(100, 120, 30, 80);
+                ctx.fillRect(150, 100, 30, 100);
+                ctx.fillRect(200, 80, 30, 120);
+                ctx.fillRect(250, 60, 30, 140);
+                ctx.fillRect(300, 40, 30, 160);
+                
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Arial';
+                ctx.fillText('Patient Registration Trend (Last 6 Months)', 50, 20);
+            }
+
+            // Age Chart
+            const ageCtx = document.getElementById('ageChart');
+            if (ageCtx) {
+                const ctx = ageCtx.getContext('2d');
+                // Simple pie chart representation
+                ctx.fillStyle = '#0d6efd';
+                ctx.beginPath();
+                ctx.arc(200, 100, 80, 0, Math.PI);
+                ctx.fill();
+                
+                ctx.fillStyle = '#198754';
+                ctx.beginPath();
+                ctx.arc(200, 100, 80, Math.PI, Math.PI * 1.5);
+                ctx.fill();
+                
+                ctx.fillStyle = '#ffc107';
+                ctx.beginPath();
+                ctx.arc(200, 100, 80, Math.PI * 1.5, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.fillStyle = '#000';
+                ctx.font = '12px Arial';
+                ctx.fillText('Age Distribution', 150, 20);
+                ctx.fillText('0-30: Blue', 50, 200);
+                ctx.fillText('31-60: Green', 150, 200);
+                ctx.fillText('60+: Yellow', 250, 200);
+            }
+        });
+    </script>
+
+    <style layout:fragment="styles">
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .bg-pink {
+            background-color: #e91e63 !important;
+        }
+        canvas {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/main}">
+<head>
+    <title>Emergency Patients</title>
+</head>
+<body>
+    <div layout:fragment="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-ambulance me-2 text-danger"></i>Emergency Patients</h2>
+            <div>
+                <a th:href="@{/patients/new}" class="btn btn-danger">
+                    <i class="fas fa-user-plus me-2"></i>Register Emergency Patient
+                </a>
+                <a th:href="@{/patients}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Patients
+                </a>
+            </div>
+        </div>
+
+        <!-- Emergency Status Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>3</h4>
+                                <p class="mb-0">Critical</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-warning text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>5</h4>
+                                <p class="mb-0">Urgent</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-clock fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-info text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>12</h4>
+                                <p class="mb-0">Stable</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-heartbeat fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card bg-success text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h4>8</h4>
+                                <p class="mb-0">Discharged Today</p>
+                            </div>
+                            <div class="align-self-center">
+                                <i class="fas fa-check-circle fa-2x"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Patients Table -->
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Current Emergency Cases</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-hover">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Priority</th>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Condition</th>
+                                <th>Arrival Time</th>
+                                <th>Assigned Doctor</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Sample emergency cases - in real implementation, filter by emergency status -->
+                            <tr th:each="patient, iterStat : ${emergencyPatients}" th:if="${iterStat.index < 5}">
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${iterStat.index == 0} ? 'bg-danger' : (${iterStat.index == 1} ? 'bg-warning' : 'bg-info')"
+                                          th:text="${iterStat.index == 0} ? 'CRITICAL' : (${iterStat.index == 1} ? 'URGENT' : 'STABLE')">CRITICAL</span>
+                                </td>
+                                <td th:text="${patient.id}">1</td>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="avatar-sm bg-danger rounded-circle d-flex align-items-center justify-content-center me-2">
+                                            <i class="fas fa-user text-white"></i>
+                                        </div>
+                                        <div>
+                                            <strong th:text="${patient.firstName + ' ' + patient.lastName}">John Doe</strong>
+                                            <br>
+                                            <small class="text-muted" th:text="${patient.phoneNumber}">+1234567890</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td th:text="${patient.age}">35</td>
+                                <td>
+                                    <span th:if="${iterStat.index == 0}" class="text-danger">Cardiac Arrest</span>
+                                    <span th:if="${iterStat.index == 1}" class="text-warning">Severe Trauma</span>
+                                    <span th:if="${iterStat.index == 2}" class="text-info">Respiratory Distress</span>
+                                    <span th:if="${iterStat.index >= 3}" class="text-secondary">General Emergency</span>
+                                </td>
+                                <td>
+                                    <span th:text="${#temporals.format(T(java.time.LocalDateTime).now().minusHours(iterStat.index + 1), 'HH:mm')}">14:30</span>
+                                    <br>
+                                    <small class="text-muted" th:text="${#temporals.format(T(java.time.LocalDate).now(), 'MMM dd')}">Jan 15</small>
+                                </td>
+                                <td>
+                                    <span th:if="${iterStat.index == 0}">Dr. Smith</span>
+                                    <span th:if="${iterStat.index == 1}">Dr. Johnson</span>
+                                    <span th:if="${iterStat.index == 2}">Dr. Williams</span>
+                                    <span th:if="${iterStat.index >= 3}" class="text-muted">Unassigned</span>
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a class="btn btn-sm btn-outline-primary" 
+                                           th:href="@{/patients/{id}(id=${patient.id})}">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <button class="btn btn-sm btn-outline-success" 
+                                                onclick="alert('Treatment plan coming soon!')">
+                                            <i class="fas fa-stethoscope"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning" 
+                                                onclick="alert('Transfer patient coming soon!')">
+                                            <i class="fas fa-ambulance"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr th:if="${emergencyPatients.empty}">
+                                <td colspan="8" class="text-center py-4">
+                                    <div class="text-muted">
+                                        <i class="fas fa-ambulance fa-3x mb-3"></i>
+                                        <p>No emergency cases at the moment.</p>
+                                        <p class="small">This is a good thing! 🎉</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Emergency Protocols -->
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-danger text-white">
+                        <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i>Emergency Protocols</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <span class="badge bg-danger me-2">CRITICAL</span>
+                                Immediate life-threatening conditions
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-warning me-2">URGENT</span>
+                                Serious conditions requiring prompt care
+                            </li>
+                            <li class="mb-2">
+                                <span class="badge bg-info me-2">STABLE</span>
+                                Non-life threatening but needs attention
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0"><i class="fas fa-phone me-2"></i>Emergency Contacts</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <strong>Emergency Services:</strong> 911
+                            </li>
+                            <li class="mb-2">
+                                <strong>Hospital Main:</strong> (555) 123-4567
+                            </li>
+                            <li class="mb-2">
+                                <strong>Emergency Dept:</strong> (555) 123-4568
+                            </li>
+                            <li class="mb-2">
+                                <strong>Trauma Center:</strong> (555) 123-4569
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script layout:fragment="scripts">
+        // Auto-refresh emergency data every 30 seconds
+        setInterval(function() {
+            // In a real application, you would refresh the emergency data
+            console.log('Emergency data refresh (placeholder)');
+        }, 30000);
+
+        // Emergency alert sound (placeholder)
+        function playEmergencyAlert() {
+            // In a real application, you would play an alert sound
+            console.log('Emergency alert sound (placeholder)');
+        }
+    </script>
+
+    <style layout:fragment="styles">
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .table tbody tr:first-child {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { background-color: rgba(220, 53, 69, 0.1); }
+            50% { background-color: rgba(220, 53, 69, 0.2); }
+            100% { background-color: rgba(220, 53, 69, 0.1); }
+        }
+    </style>
+</body>
+</html>

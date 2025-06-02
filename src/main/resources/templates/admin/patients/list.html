@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Management - HMS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2><i class="fas fa-user-injured me-2 text-primary"></i>Patient Management</h2>
+                    <div>
+                        <button class="btn btn-primary" onclick="loadContent('/patients/new')">
+                            <i class="fas fa-user-plus me-2"></i>Add New Patient
+                        </button>
+                        <button class="btn btn-outline-secondary" onclick="loadContent('/admin/patients/search')">
+                            <i class="fas fa-search me-2"></i>Search Patients
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Patient Statistics Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4 th:text="${patients.size()}">0</h4>
+                                        <p class="mb-0">Total Patients</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-users fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4>12</h4>
+                                        <p class="mb-0">New Today</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-user-plus fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-warning text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4>8</h4>
+                                        <p class="mb-0">Pending Appointments</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-clock fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <h4>3</h4>
+                                        <p class="mb-0">Emergency Cases</p>
+                                    </div>
+                                    <div class="align-self-center">
+                                        <i class="fas fa-ambulance fa-2x"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">All Patients</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Age</th>
+                                        <th>Gender</th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th>Registration Date</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="patient : ${patients}">
+                                        <td th:text="${patient.id}">1</td>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center me-2">
+                                                    <i class="fas fa-user text-white"></i>
+                                                </div>
+                                                <div>
+                                                    <strong th:text="${patient.firstName + ' ' + patient.lastName}">John Doe</strong>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td th:text="${patient.age}">35</td>
+                                        <td>
+                                            <span class="badge" 
+                                                  th:classappend="${patient.gender == 'MALE'} ? 'bg-primary' : 'bg-pink'"
+                                                  th:text="${patient.gender}">Male</span>
+                                        </td>
+                                        <td th:text="${patient.phoneNumber}">+1234567890</td>
+                                        <td th:text="${patient.email}">john@example.com</td>
+                                        <td th:text="${#temporals.format(patient.createdAt, 'MMM dd, yyyy')}">Jan 15, 2024</td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <button class="btn btn-sm btn-outline-primary" 
+                                                        th:onclick="'loadContent(\'/patients/' + ${patient.id} + '\')'">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-warning" 
+                                                        th:onclick="'loadContent(\'/patients/' + ${patient.id} + '/edit\')'">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-outline-danger" 
+                                                        th:onclick="'confirmDelete(' + ${patient.id} + ')'">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr th:if="${patients.empty}">
+                                        <td colspan="8" class="text-center py-4">
+                                            <div class="text-muted">
+                                                <i class="fas fa-users fa-3x mb-3"></i>
+                                                <p>No patients found. <a href="#" onclick="loadContent('/patients/new')">Add the first patient</a></p>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function confirmDelete(patientId) {
+            if (confirm('Are you sure you want to delete this patient? This action cannot be undone.')) {
+                window.location.href = '/patients/' + patientId + '/delete';
+            }
+        }
+    </script>
+
+    <style>
+        .avatar-sm {
+            width: 32px;
+            height: 32px;
+            font-size: 14px;
+        }
+        .bg-pink {
+            background-color: #e91e63 !important;
+        }
+        .table th {
+            border-top: none;
+        }
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: 1px solid rgba(0, 0, 0, 0.125);
+        }
+    </style>
+</body>
+</html>
