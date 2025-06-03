@@ -1016,50 +1016,7 @@
             return true;
         });
         
-        // Define toggleSidebarSection function IMMEDIATELY
-        function toggleSidebarSection(targetId, toggleElement) {
-            console.log('=== TOGGLE FUNCTION CALLED ===');
-            console.log('Target ID:', targetId);
-            console.log('Toggle Element:', toggleElement);
-            
-            const target = document.getElementById(targetId);
-            const arrow = toggleElement.querySelector('.sidebar-arrow');
-            
-            console.log('Target found:', target);
-            console.log('Arrow found:', arrow);
-            
-            if (target) {
-                const isCurrentlyShown = target.classList.contains('show');
-                console.log('Currently shown:', isCurrentlyShown);
-                
-                if (isCurrentlyShown) {
-                    // Hide
-                    target.classList.remove('show');
-                    target.style.display = 'none';
-                    toggleElement.setAttribute('aria-expanded', 'false');
-                    if (arrow) {
-                        arrow.style.transform = 'rotate(0deg)';
-                        arrow.style.transition = 'transform 0.3s ease';
-                    }
-                    console.log('✅ COLLAPSED:', targetId);
-                } else {
-                    // Show
-                    target.classList.add('show');
-                    target.style.display = 'block';
-                    toggleElement.setAttribute('aria-expanded', 'true');
-                    if (arrow) {
-                        arrow.style.transform = 'rotate(180deg)';
-                        arrow.style.transition = 'transform 0.3s ease';
-                    }
-                    console.log('✅ EXPANDED:', targetId);
-                }
-            } else {
-                console.error('❌ Target element not found:', targetId);
-            }
-        }
-        
-        // Make function globally available IMMEDIATELY
-        window.toggleSidebarSection = toggleSidebarSection;
+        // toggleSidebarSection function is now defined in sidebar.html
         
         document.addEventListener('DOMContentLoaded', function() {
             console.log('Dashboard DOM loaded');
@@ -1111,14 +1068,7 @@
             // Initialize dashboard
             initializeDashboard();
             
-            // Manual collapse handler as fallback
-            setupManualCollapse();
-            
-            // Direct event listeners for sidebar sections
-            setupDirectSidebarListeners();
-            
-            // Simple alternative approach
-            setTimeout(setupSimpleToggle, 2000);
+            // Sidebar functionality is handled by sidebar.html
             
             // Check if main content is visible
             const mainContent = document.getElementById('main-content');
@@ -1242,42 +1192,7 @@
             });
         }
         
-        function setupDirectSidebarListeners() {
-            console.log('Setting up direct sidebar listeners...');
-            
-            // Find all sidebar section headers
-            const sidebarHeaders = document.querySelectorAll('.sidebar-section-header');
-            console.log('Found sidebar headers:', sidebarHeaders.length);
-            
-            sidebarHeaders.forEach((header, index) => {
-                console.log(`Setting up listener for header ${index}:`, header);
-                
-                header.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    console.log('Direct click handler triggered');
-                    
-                    const targetId = this.getAttribute('href')?.substring(1) || this.getAttribute('aria-controls');
-                    console.log('Target ID from attributes:', targetId);
-                    
-                    if (targetId) {
-                        toggleSidebarSection(targetId, this);
-                    }
-                });
-            });
-            
-            // Also try to find patient submenu specifically
-            const patientHeader = document.querySelector('a[href="#patientSubmenu"]');
-            if (patientHeader) {
-                console.log('Found patient header specifically:', patientHeader);
-                patientHeader.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    console.log('Patient header clicked directly');
-                    toggleSidebarSection('patientSubmenu', this);
-                });
-            }
-        }
+
         
         // Override loadContent function if needed for dashboard
         if (typeof loadContent === 'undefined') {
@@ -1288,89 +1203,15 @@
             }
         }
         
-        // Debug functions
-        function testPatientToggle() {
-            console.log('=== TESTING PATIENT TOGGLE ===');
-            const patientHeader = document.querySelector('a[href="#patientSubmenu"]');
-            console.log('Patient header found:', patientHeader);
-            if (patientHeader) {
-                toggleSidebarSection('patientSubmenu', patientHeader);
-            } else {
-                console.error('Patient header not found!');
-            }
-        }
+
         
-        function debugSidebar() {
-            console.log('=== SIDEBAR DEBUG ===');
-            console.log('Patient submenu element:', document.getElementById('patientSubmenu'));
-            console.log('Patient header element:', document.querySelector('a[href="#patientSubmenu"]'));
-            console.log('All sidebar headers:', document.querySelectorAll('.sidebar-section-header'));
-            console.log('All collapse elements:', document.querySelectorAll('.collapse'));
-        }
-        
-        function forceShowPatients() {
-            console.log('=== FORCE SHOWING PATIENTS ===');
-            const submenu = document.getElementById('patientSubmenu');
-            if (submenu) {
-                submenu.classList.add('show');
-                submenu.style.display = 'block';
-                submenu.style.opacity = '1';
-                submenu.style.maxHeight = '500px';
-                console.log('Forced patient submenu to show');
-            }
-        }
-        
-        function setupSimpleToggle() {
-            console.log('=== SETTING UP SIMPLE TOGGLE ===');
-            
-            // Find the patient toggle by ID
-            const patientToggle = document.getElementById('patientToggle');
-            const patientSubmenu = document.getElementById('patientSubmenu');
-            
-            console.log('Patient toggle found:', patientToggle);
-            console.log('Patient submenu found:', patientSubmenu);
-            
-            if (patientToggle && patientSubmenu) {
-                // Remove existing event listeners
-                patientToggle.onclick = null;
-                
-                // Add new simple click handler
-                patientToggle.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    
-                    console.log('🔥 SIMPLE TOGGLE CLICKED!');
-                    
-                    const isVisible = patientSubmenu.style.display === 'block' || patientSubmenu.classList.contains('show');
-                    console.log('Currently visible:', isVisible);
-                    
-                    if (isVisible) {
-                        // Hide
-                        patientSubmenu.style.display = 'none';
-                        patientSubmenu.classList.remove('show');
-                        console.log('✅ HIDDEN');
-                    } else {
-                        // Show
-                        patientSubmenu.style.display = 'block';
-                        patientSubmenu.classList.add('show');
-                        console.log('✅ SHOWN');
-                    }
-                });
-                
-                console.log('✅ Simple toggle setup complete');
-            } else {
-                console.error('❌ Could not find patient toggle or submenu elements');
-            }
-        }
+
         
         // Note: loadContent function is loaded from sidebar fragment
 
         // Make functions globally available (loadContent comes from sidebar fragment)
-        window.toggleSidebarSection = toggleSidebarSection;
-        window.setupDirectSidebarListeners = setupDirectSidebarListeners;
-        window.testPatientToggle = testPatientToggle;
-        window.debugSidebar = debugSidebar;
-        window.forceShowPatients = forceShowPatients;
+
+
     </script>
 
     <!-- Custom Dashboard CSS -->

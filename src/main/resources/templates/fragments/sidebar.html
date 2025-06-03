@@ -17,25 +17,8 @@
                 
                 <!-- Patient Management -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#patientSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="patientSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'patient'} ? 'true' : 'false'" aria-controls="patientSubmenu"
-                       onclick="console.log('Patient header clicked!'); 
-                                var submenu = document.getElementById('patientSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ EXPANDED'); 
-                                    } 
-                                } 
-                                return false;"
                        id="patientToggle">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
@@ -78,25 +61,8 @@
 
                 <!-- Doctor Management -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#doctorSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'doctor'} ? 'true' : 'false'" aria-controls="doctorSubmenu"
-                       onclick="console.log('Doctor header clicked!'); 
-                                var submenu = document.getElementById('doctorSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ DOCTOR COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ DOCTOR EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="doctorSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'doctor'} ? 'true' : 'false'" aria-controls="doctorSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-user-md"></i>
@@ -133,25 +99,8 @@
 
                 <!-- Nurse Management -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#nurseSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'nurse'} ? 'true' : 'false'" aria-controls="nurseSubmenu"
-                       onclick="console.log('Nurse header clicked!'); 
-                                var submenu = document.getElementById('nurseSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ NURSE COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ NURSE EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="nurseSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'nurse'} ? 'true' : 'false'" aria-controls="nurseSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-user-nurse"></i>
@@ -188,25 +137,8 @@
 
                 <!-- Appointments -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#appointmentSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'appointment'} ? 'true' : 'false'" aria-controls="appointmentSubmenu"
-                       onclick="console.log('Appointment header clicked!'); 
-                                var submenu = document.getElementById('appointmentSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ APPOINTMENT COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ APPOINTMENT EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="appointmentSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'appointment'} ? 'true' : 'false'" aria-controls="appointmentSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-calendar-check"></i>
@@ -238,25 +170,8 @@
 
                 <!-- Billing & Finance -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#billingSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'billing'} ? 'true' : 'false'" aria-controls="billingSubmenu"
-                       onclick="console.log('Billing header clicked!'); 
-                                var submenu = document.getElementById('billingSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ BILLING COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ BILLING EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="billingSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'billing'} ? 'true' : 'false'" aria-controls="billingSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-file-invoice-dollar"></i>
@@ -293,7 +208,7 @@
 
                 <!-- Laboratory -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#labSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="labSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'lab'} ? 'true' : 'false'" aria-controls="labSubmenu"
                        onclick="console.log('Laboratory header clicked!'); 
                                 var submenu = document.getElementById('labSubmenu'); 
@@ -348,7 +263,7 @@
 
                 <!-- Pharmacy -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#pharmacySubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="pharmacySubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'pharmacy'} ? 'true' : 'false'" aria-controls="pharmacySubmenu"
                        onclick="console.log('Pharmacy header clicked!'); 
                                 var submenu = document.getElementById('pharmacySubmenu'); 
@@ -403,7 +318,7 @@
 
                 <!-- Inventory -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#inventorySubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="inventorySubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'inventory'} ? 'true' : 'false'" aria-controls="inventorySubmenu"
                        onclick="console.log('Inventory header clicked!'); 
                                 var submenu = document.getElementById('inventorySubmenu'); 
@@ -458,7 +373,7 @@
 
                 <!-- Inpatient Care -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#inpatientSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="inpatientSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'inpatient'} ? 'true' : 'false'" aria-controls="inpatientSubmenu"
                        onclick="console.log('Inpatient header clicked!'); 
                                 var submenu = document.getElementById('inpatientSubmenu'); 
@@ -513,7 +428,7 @@
 
                 <!-- Reception -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#receptionSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="receptionSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'reception'} ? 'true' : 'false'" aria-controls="receptionSubmenu"
                        onclick="console.log('Reception header clicked!'); 
                                 var submenu = document.getElementById('receptionSubmenu'); 
@@ -568,7 +483,7 @@
 
                 <!-- Administration -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#adminSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="adminSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'admin'} ? 'true' : 'false'" aria-controls="adminSubmenu"
                        onclick="console.log('Administration header clicked!'); 
                                 var submenu = document.getElementById('adminSubmenu'); 
@@ -623,7 +538,7 @@
 
                 <!-- System Settings -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="#settingsSubmenu" role="button" 
+                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="settingsSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'settings'} ? 'true' : 'false'" aria-controls="settingsSubmenu"
                        onclick="console.log('Settings header clicked!'); 
                                 var submenu = document.getElementById('settingsSubmenu'); 
@@ -678,7 +593,7 @@
 
                 <!-- Reports -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link" data-bs-toggle="collapse" href="#reportsSubmenu" role="button" 
+                    <a class="nav-link" data-bs-toggle="collapse" href="javascript:void(0)" data-target="reportsSubmenu" role="button" 
                        th:aria-expanded="${activeModule == 'reports'} ? 'true' : 'false'" aria-controls="reportsSubmenu">
                         <i class="fas fa-chart-bar me-2"></i> Reports
                         <i class="fas fa-chevron-down float-end mt-1"></i>
@@ -1168,7 +1083,7 @@
             }
         });
         
-        // Toggle sidebar section function
+        // Toggle sidebar section function with accordion behavior
         function toggleSidebarSection(targetId, toggleElement) {
             console.log('=== TOGGLE FUNCTION CALLED ===');
             console.log('Target ID:', targetId);
@@ -1184,6 +1099,30 @@
                 const isCurrentlyShown = target.classList.contains('show');
                 console.log('Currently shown:', isCurrentlyShown);
                 
+                // First, close all other submenus (accordion behavior)
+                const allSubmenus = document.querySelectorAll('.sidebar .collapse');
+                const allToggles = document.querySelectorAll('.sidebar [data-bs-toggle="collapse"]');
+                
+                allSubmenus.forEach(submenu => {
+                    if (submenu.id !== targetId && submenu.classList.contains('show')) {
+                        submenu.classList.remove('show');
+                        submenu.style.display = 'none';
+                        console.log('✅ CLOSED OTHER SUBMENU:', submenu.id);
+                    }
+                });
+                
+                allToggles.forEach(toggle => {
+                    if (toggle !== toggleElement) {
+                        toggle.setAttribute('aria-expanded', 'false');
+                        const otherArrow = toggle.querySelector('.sidebar-arrow');
+                        if (otherArrow) {
+                            otherArrow.style.transform = 'rotate(0deg)';
+                            otherArrow.style.transition = 'transform 0.3s ease';
+                        }
+                    }
+                });
+                
+                // Now toggle the target submenu
                 if (isCurrentlyShown) {
                     // Hide
                     target.classList.remove('show');
@@ -1209,6 +1148,34 @@
                 console.error('❌ Target element not found:', targetId);
             }
         }
+        
+        // Set up event listeners for all sidebar section headers
+        function setupSidebarAccordion() {
+            console.log('Setting up sidebar accordion...');
+            
+            // Find all sidebar section headers
+            const sidebarHeaders = document.querySelectorAll('.sidebar-section-header');
+            console.log('Found sidebar headers:', sidebarHeaders.length);
+            
+            sidebarHeaders.forEach(header => {
+                header.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    // Get the target submenu ID from data-target attribute
+                    const targetId = this.getAttribute('data-target');
+                    console.log('Sidebar header clicked, target:', targetId);
+                    
+                    // Call our toggle function
+                    toggleSidebarSection(targetId, this);
+                });
+            });
+            
+            console.log('Sidebar accordion setup complete');
+        }
+        
+        // Initialize sidebar accordion when DOM is ready
+        document.addEventListener('DOMContentLoaded', setupSidebarAccordion);
         
         // Make functions globally available
         window.loadContent = loadContent;
