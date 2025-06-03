@@ -393,73 +393,67 @@
             })
             .then(html => {
                 console.log('✅ Content fetched successfully');
-                // Show success message since we don't have actual endpoints yet
-                contentArea.innerHTML = `
-                    <div class="alert alert-success">
-                        <h4><i class="fas fa-check-circle me-2"></i>AJAX Navigation Working!</h4>
-                        <p><strong>URL:</strong> ${url}</p>
-                        <p><strong>Status:</strong> Content would be loaded here if the endpoint existed.</p>
-                        <hr>
-                        <p class="mb-0">✅ This confirms that the AJAX navigation is working properly. The actual content will appear when the backend endpoints are implemented.</p>
-                    </div>
-                    <div class="card mt-3">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Debug Information</h5>
+                // Check if we got actual content or just a basic response
+                if (html && html.trim().length > 0) {
+                    // Extract content from layout if it's a full page
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    
+                    // Try to find the main content area in the response
+                    let content = doc.querySelector('[layout\\:fragment="content"]') || 
+                                 doc.querySelector('.content') || 
+                                 doc.querySelector('main') ||
+                                 doc.querySelector('body > div');
+                    
+                    if (content) {
+                        contentArea.innerHTML = content.innerHTML;
+                        console.log('✅ Content loaded successfully from fragment');
+                    } else {
+                        // If no specific content area found, use the whole body content
+                        const bodyContent = doc.querySelector('body');
+                        if (bodyContent) {
+                            contentArea.innerHTML = bodyContent.innerHTML;
+                            console.log('✅ Content loaded successfully from body');
+                        } else {
+                            // Fallback: use the raw HTML
+                            contentArea.innerHTML = html;
+                            console.log('✅ Content loaded successfully (raw HTML)');
+                        }
+                    }
+                } else {
+                    // Show debug message if no content
+                    contentArea.innerHTML = `
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Empty Response</h4>
+                            <p><strong>URL:</strong> ${url}</p>
+                            <p>The endpoint returned an empty response.</p>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <p><strong>Requested URL:</strong> <code>${url}</code></p>
-                                    <p><strong>Method:</strong> <span class="badge bg-info">GET</span></p>
-                                    <p><strong>Content Area:</strong> <code>#main-content</code></p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Status:</strong> <span class="badge bg-success">AJAX call successful</span></p>
-                                    <p><strong>Navigation:</strong> <span class="badge bg-success">No page refresh</span></p>
-                                    <p><strong>Function:</strong> <span class="badge bg-success">loadContent working</span></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
+                    `;
+                }
             })
             .catch(error => {
                 console.error('📡 Error loading content:', error);
-                contentArea.innerHTML = `
-                    <div class="alert alert-info">
-                        <h4><i class="fas fa-info-circle me-2"></i>AJAX Navigation Working (Endpoint Not Found)</h4>
-                        <p><strong>URL:</strong> ${url}</p>
-                        <p><strong>Error:</strong> ${error.message}</p>
-                        <hr>
-                        <p class="mb-0">ℹ️ This is expected if the backend endpoint doesn't exist yet. The important thing is that AJAX navigation is working - no page refresh occurred!</p>
-                    </div>
-                    <div class="card mt-3">
-                        <div class="card-header bg-info text-white">
-                            <h5 class="mb-0"><i class="fas fa-check-circle me-2"></i>What This Means</h5>
+                if (error.message.includes('404')) {
+                    contentArea.innerHTML = `
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Page Not Found</h4>
+                            <p><strong>URL:</strong> ${url}</p>
+                            <p>The requested page could not be found. This endpoint may not be implemented yet.</p>
+                            <hr>
+                            <p class="mb-0">Please check if the controller endpoint exists for this URL.</p>
                         </div>
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <h6>✅ Working:</h6>
-                                    <ul class="list-unstyled">
-                                        <li>✅ AJAX function is working</li>
-                                        <li>✅ Content area found</li>
-                                        <li>✅ HTTP request sent</li>
-                                        <li>✅ No page navigation</li>
-                                    </ul>
-                                </div>
-                                <div class="col-md-6">
-                                    <h6>⚠️ Next Steps:</h6>
-                                    <ul class="list-unstyled">
-                                        <li>⚠️ Backend needs to implement <code>${url}</code></li>
-                                        <li>⚠️ Create controller endpoint</li>
-                                        <li>⚠️ Return proper HTML content</li>
-                                    </ul>
-                                </div>
-                            </div>
+                    `;
+                } else {
+                    contentArea.innerHTML = `
+                        <div class="alert alert-danger">
+                            <h4><i class="fas fa-exclamation-circle me-2"></i>Error Loading Content</h4>
+                            <p><strong>URL:</strong> ${url}</p>
+                            <p><strong>Error:</strong> ${error.message}</p>
+                            <hr>
+                            <p class="mb-0">Please try again or contact support if the problem persists.</p>
                         </div>
-                    </div>
-                `;
+                    `;
+                }
             });
         }
         

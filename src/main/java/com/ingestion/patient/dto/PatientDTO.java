@@ -8,6 +8,8 @@ import jakarta.validation.constraints.Size;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.Period;
 
 
 public class PatientDTO {
@@ -48,6 +50,8 @@ public class PatientDTO {
     private String insuranceProvider;
     
     private String insurancePolicyNumber;
+    
+    private LocalDateTime createdAt;
 
     public Long getId() {
         return id;
@@ -169,6 +173,22 @@ public class PatientDTO {
         this.insurancePolicyNumber = insurancePolicyNumber;
     }
 
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    
+    // Calculate age from date of birth
+    public Integer getAge() {
+        if (dateOfBirth == null) {
+            return null;
+        }
+        return Period.between(dateOfBirth, LocalDate.now()).getYears();
+    }
+
     // Convert Entity to DTO
     public static PatientDTO fromEntity(Patient patient) {
         PatientDTO dto = new PatientDTO();
@@ -187,6 +207,7 @@ public class PatientDTO {
         dto.setEmergencyContactPhone(patient.getEmergencyContactPhone());
         dto.setInsuranceProvider(patient.getInsuranceProvider());
         dto.setInsurancePolicyNumber(patient.getInsurancePolicyNumber());
+        dto.setCreatedAt(patient.getCreatedAt());
         return dto;
     }
     
