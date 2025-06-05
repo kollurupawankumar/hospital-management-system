@@ -371,4 +371,51 @@ public class InvoiceServiceImpl implements InvoiceService {
         
         invoiceRepository.delete(invoice);
     }
+
+    // Additional methods for the controller
+    @Override
+    public Page<Invoice> findAll(Pageable pageable) {
+        return invoiceRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Invoice> findByStatus(String status, Pageable pageable) {
+        try {
+            Invoice.InvoiceStatus invoiceStatus = Invoice.InvoiceStatus.valueOf(status.toUpperCase());
+            return invoiceRepository.findByStatus(invoiceStatus, pageable);
+        } catch (IllegalArgumentException e) {
+            return Page.empty(pageable);
+        }
+    }
+
+    @Override
+    public Page<Invoice> findByPatientNameContaining(String patientName, Pageable pageable) {
+        return invoiceRepository.findByPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCase(
+                patientName, patientName, pageable);
+    }
+
+    @Override
+    public List<Invoice> findRecentInvoices(int limit) {
+        return invoiceRepository.findTop5ByOrderByInvoiceDateDesc();
+    }
+
+    @Override
+    public BigDecimal getTotalRevenue() {
+        return invoiceRepository.sumTotalAmountByPaymentStatus(Invoice.PaymentStatus.PAID);
+    }
+
+    @Override
+    public BigDecimal getPendingAmount() {
+        return invoiceRepository.sumTotalAmountByPaymentStatus(Invoice.PaymentStatus.PENDING);
+    }
+
+    @Override
+    public Long getTotalInvoiceCount() {
+        return invoiceRepository.count();
+    }
+
+    @Override
+    public Long getPaidInvoiceCount() {
+        return invoiceRepository.countByPaymentStatus(Invoice.PaymentStatus.PAID);
+    }
 }

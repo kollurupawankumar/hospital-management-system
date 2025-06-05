@@ -24,12 +24,35 @@ public class Appointment {
 
     @Column(name = "appointment_date", nullable = false)
     private LocalDateTime appointmentDate;
+    
+    // Alias for appointmentDate to match template expectations
+    public LocalDateTime getAppointmentDateTime() {
+        return appointmentDate;
+    }
+    
+    public void setAppointmentDateTime(LocalDateTime appointmentDateTime) {
+        this.appointmentDate = appointmentDateTime;
+    }
 
     @Column(name = "end_time")
     private LocalDateTime endTime;
 
     @Column(name = "purpose", nullable = false)
     private String purpose;
+    
+    @Column(name = "reason")
+    private String reason;
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "appointment_type")
+    private AppointmentType appointmentType = AppointmentType.CONSULTATION;
+    
+    @Column(name = "duration")
+    private Integer duration = 30; // Default 30 minutes
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
+    private Priority priority = Priority.MEDIUM;
 
     @Column(name = "notes", length = 1000)
     private String notes;
@@ -68,7 +91,15 @@ public class Appointment {
     }
 
     public enum AppointmentStatus {
-        SCHEDULED, CONFIRMED, COMPLETED, CANCELLED, NO_SHOW, RESCHEDULED
+        SCHEDULED, CONFIRMED, IN_PROGRESS, COMPLETED, CANCELLED, NO_SHOW, RESCHEDULED
+    }
+    
+    public enum AppointmentType {
+        CONSULTATION, FOLLOW_UP, EMERGENCY, ROUTINE_CHECKUP, SPECIALIST_CONSULTATION, TELEMEDICINE
+    }
+    
+    public enum Priority {
+        LOW, MEDIUM, HIGH, URGENT
     }
 
     public Long getId() {
@@ -181,5 +212,37 @@ public class Appointment {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+    
+    public String getReason() {
+        return reason;
+    }
+    
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+    
+    public AppointmentType getAppointmentType() {
+        return appointmentType;
+    }
+    
+    public void setAppointmentType(AppointmentType appointmentType) {
+        this.appointmentType = appointmentType;
+    }
+    
+    public Integer getDuration() {
+        return duration;
+    }
+    
+    public void setDuration(Integer duration) {
+        this.duration = duration;
+    }
+    
+    public Priority getPriority() {
+        return priority;
+    }
+    
+    public void setPriority(Priority priority) {
+        this.priority = priority;
     }
 }

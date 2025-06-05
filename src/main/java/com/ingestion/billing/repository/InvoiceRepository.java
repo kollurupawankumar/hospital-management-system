@@ -88,4 +88,15 @@ public interface InvoiceRepository extends JpaRepository<Invoice, Long> {
     
     @Query("SELECT SUM(i.balanceAmount) FROM Invoice i WHERE i.patient.id = :patientId AND i.paymentStatus IN ('PENDING', 'PARTIAL')")
     Double getTotalOutstandingAmountByPatient(@Param("patientId") Long patientId);
+    
+    // Additional methods for the controller
+    Page<Invoice> findByStatus(Invoice.InvoiceStatus status, Pageable pageable);
+    
+    Page<Invoice> findByPatientFirstNameContainingIgnoreCaseOrPatientLastNameContainingIgnoreCase(
+            String firstName, String lastName, Pageable pageable);
+    
+    List<Invoice> findTop5ByOrderByInvoiceDateDesc();
+    
+    @Query("SELECT COALESCE(SUM(i.totalAmount), 0) FROM Invoice i WHERE i.paymentStatus = :paymentStatus")
+    java.math.BigDecimal sumTotalAmountByPaymentStatus(@Param("paymentStatus") Invoice.PaymentStatus paymentStatus);
 }

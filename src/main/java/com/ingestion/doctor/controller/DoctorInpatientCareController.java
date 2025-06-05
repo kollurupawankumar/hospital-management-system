@@ -373,4 +373,6 @@ public class DoctorInpatientCareController {
         
         return "doctor/discharge-summary-print";
     }
+
+
 }

@@ -167,4 +167,32 @@ public class PaymentServiceImpl implements PaymentService {
     public void deletePayment(Long id) {
         paymentRepository.deleteById(id);
     }
+
+    // Additional methods for the controller
+    @Override
+    public Page<Payment> findAll(Pageable pageable) {
+        return paymentRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Payment> findByPaymentMethod(String method, Pageable pageable) {
+        try {
+            Payment.PaymentMethod paymentMethod = Payment.PaymentMethod.valueOf(method.toUpperCase());
+            return paymentRepository.findByPaymentMethod(paymentMethod, pageable);
+        } catch (IllegalArgumentException e) {
+            return Page.empty(pageable);
+        }
+    }
+
+    @Override
+    public Page<Payment> findByPaymentDate(java.time.LocalDate paymentDate, Pageable pageable) {
+        LocalDateTime startOfDay = paymentDate.atStartOfDay();
+        LocalDateTime endOfDay = paymentDate.atTime(23, 59, 59);
+        return paymentRepository.findByPaymentDateBetween(startOfDay, endOfDay, pageable);
+    }
+
+    @Override
+    public List<Payment> findRecentPayments(int limit) {
+        return paymentRepository.findTop5ByOrderByPaymentDateDesc();
+    }
 }

@@ -86,4 +86,21 @@ public interface InvoiceService {
     void checkAndUpdateOverdueInvoices();
     
     void deleteInvoice(Long id);
+    
+    // Additional methods for the controller
+    Page<Invoice> findAll(Pageable pageable);
+    
+    Page<Invoice> findByStatus(String status, Pageable pageable);
+    
+    Page<Invoice> findByPatientNameContaining(String patientName, Pageable pageable);
+    
+    List<Invoice> findRecentInvoices(int limit);
+    
+    BigDecimal getTotalRevenue();
+    
+    BigDecimal getPendingAmount();
+    
+    Long getTotalInvoiceCount();
+    
+    Long getPaidInvoiceCount();
 }

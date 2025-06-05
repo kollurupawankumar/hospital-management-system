@@ -31,27 +31,27 @@
                     <div class="collapse" th:classappend="${activeModule == 'patient'} ? 'show' : ''" id="patientSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/patients'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/patients'); return false;">
                                     <i class="fas fa-list me-2"></i> All Patients
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/patients/new'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/patients/new'); return false;">
                                     <i class="fas fa-user-plus me-2"></i> Add Patient
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/patients/search'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/patients/search'); return false;">
                                     <i class="fas fa-search me-2"></i> Search
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/patients/reports'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/patients/reports'); return false;">
                                     <i class="fas fa-chart-bar me-2"></i> Reports
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/patients/emergency'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/patients/emergency'); return false;">
                                     <i class="fas fa-ambulance me-2"></i> Emergency
                                 </a>
                             </li>
@@ -112,22 +112,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'nurse'} ? 'show' : ''" id="nurseSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/nurses/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/nursing/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/nurses'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/nursing/nurses'); return false;">
                                     <i class="fas fa-list me-2"></i> All Nurses
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/nurses/new'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/nursing/nurses/new'); return false;">
                                     <i class="fas fa-user-plus me-2"></i> Add Nurse
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/nurses/tasks'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/nursing/tasks'); return false;">
                                     <i class="fas fa-tasks me-2"></i> Tasks
                                 </a>
                             </li>
@@ -150,17 +150,17 @@
                     <div class="collapse" th:classappend="${activeModule == 'appointment'} ? 'show' : ''" id="appointmentSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/appointments'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/appointments'); return false;">
                                     <i class="fas fa-list me-2"></i> All Appointments
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/appointments/new'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/appointments/new'); return false;">
                                     <i class="fas fa-plus me-2"></i> Schedule
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/appointments/calendar'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/appointments/calendar'); return false;">
                                     <i class="fas fa-calendar me-2"></i> Calendar
                                 </a>
                             </li>
@@ -183,22 +183,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'billing'} ? 'show' : ''" id="billingSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/billing/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/billing/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/billing/invoices'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/billing/invoices'); return false;">
                                     <i class="fas fa-file-invoice me-2"></i> Invoices
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/billing/payments'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/billing/payments'); return false;">
                                     <i class="fas fa-credit-card me-2"></i> Payments
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/billing/reports'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/billing/reports'); return false;">
                                     <i class="fas fa-chart-line me-2"></i> Reports
                                 </a>
                             </li>
@@ -238,17 +238,17 @@
                     <div class="collapse" th:classappend="${activeModule == 'lab'} ? 'show' : ''" id="labSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/orders'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/dashboard'); return false;">
                                     <i class="fas fa-list-alt me-2"></i> Orders
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/results'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/dashboard'); return false;">
                                     <i class="fas fa-vial me-2"></i> Results
                                 </a>
                             </li>

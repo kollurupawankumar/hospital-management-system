@@ -55,4 +55,11 @@ public interface PaymentRepository extends JpaRepository<Payment, Long> {
     
     @Query("SELECT COUNT(p) FROM Payment p WHERE p.paymentDate BETWEEN :startDate AND :endDate")
     Long countByDateRange(@Param("startDate") LocalDateTime startDate, @Param("endDate") LocalDateTime endDate);
+    
+    // Additional methods for the controller
+    Page<Payment> findByPaymentMethod(Payment.PaymentMethod paymentMethod, Pageable pageable);
+    
+    Page<Payment> findByPaymentDateBetween(LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
+    
+    List<Payment> findTop5ByOrderByPaymentDateDesc();
 }

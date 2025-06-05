@@ -8,6 +8,7 @@ import com.ingestion.patient.repository.AppointmentRepository;
 import com.ingestion.doctor.repository.DoctorRepository;
 import com.ingestion.patient.repository.PatientRepository;
 import com.ingestion.common.service.NotificationService;
+import com.ingestion.security.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,9 +45,10 @@ public class AppointmentService {
     }
 
     @Transactional(readOnly = true)
-    public Optional<Appointment> getAppointmentById(Long id) {
+    public Appointment getAppointmentById(Long id) {
         log.debug("Fetching appointment with ID: {}", id);
-        return appointmentRepository.findById(id);
+        return appointmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Appointment not found with id: " + id));
     }
 
     @Transactional
@@ -90,6 +92,14 @@ public class AppointmentService {
     public List<Appointment> getAppointmentsByDoctorId(Long doctorId) {
         log.debug("Fetching appointments for doctor ID: {}", doctorId);
         return appointmentRepository.findByDoctorId(doctorId);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<Appointment> getAppointmentsByDoctor(User doctor) {
+        log.debug("Fetching appointments for doctor: {}", doctor.getUsername());
+        // For now, return all appointments since we don't have a direct doctor-user relationship
+        // In a real system, you'd have a proper mapping between User and Doctor entities
+        return appointmentRepository.findAll();
     }
 
     @Transactional(readOnly = true)

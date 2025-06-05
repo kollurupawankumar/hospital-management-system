@@ -61,4 +61,13 @@ public interface PaymentService {
     Payment refundPayment(Long paymentId, User refundedBy, String reason, String refundReference);
     
     void deletePayment(Long id);
+    
+    // Additional methods for the controller
+    Page<Payment> findAll(Pageable pageable);
+    
+    Page<Payment> findByPaymentMethod(String method, Pageable pageable);
+    
+    Page<Payment> findByPaymentDate(java.time.LocalDate paymentDate, Pageable pageable);
+    
+    List<Payment> findRecentPayments(int limit);
 }

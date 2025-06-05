@@ -19,11 +19,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
 @Controller
-@RequestMapping("/nursing/dashboard")
+@RequestMapping("/nursing")
 public class NursingDashboardController {
 
     @Autowired
@@ -44,7 +45,7 @@ public class NursingDashboardController {
     @Autowired
     private UserService userService;
 
-    @GetMapping
+    @GetMapping("/dashboard")
     public String getDashboard(Model model, Authentication authentication) {
         User currentUser = userService.findByUsername(authentication.getName());
         
@@ -97,5 +98,34 @@ public class NursingDashboardController {
         model.addAttribute("recentPatients", recentPatients);
         
         return "nursing/dashboard";
+    }
+
+    // Nurse Management endpoints
+    @GetMapping("/nurses")
+    public String getAllNurses(Model model) {
+        // Get all users with NURSE role
+        List<User> allUsers = userService.getAllUsers();
+        List<User> nurses = allUsers.stream()
+            .filter(user -> user.getRoles().contains(User.UserRole.ROLE_NURSE))
+            .toList();
+        model.addAttribute("nurses", nurses);
+        return "nursing/nurses";
+    }
+
+    @GetMapping("/nurses/new")
+    public String newNurse(Model model) {
+        model.addAttribute("nurse", new User());
+        return "nursing/nurse-form";
+    }
+
+    @GetMapping("/tasks")
+    public String getTasks(Model model, Authentication authentication) {
+        User currentUser = userService.findByUsername(authentication.getName());
+        
+        // Get all tasks for the current nurse
+        List<NursingTask> tasks = nursingTaskService.findByAssignedTo(currentUser);
+        model.addAttribute("tasks", tasks);
+        
+        return "nursing/tasks";
     }
 }

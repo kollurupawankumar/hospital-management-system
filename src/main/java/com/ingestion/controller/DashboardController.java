@@ -11,12 +11,15 @@ import com.ingestion.billing.service.PaymentService;
 import com.ingestion.inventory.service.ItemService;
 import com.ingestion.inventory.service.InventoryService;
 import com.ingestion.common.service.PurchaseOrderService;
+import com.ingestion.common.model.inpatient.InpatientAdmission;
+import com.ingestion.common.repository.InpatientAdmissionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,6 +59,9 @@ public class DashboardController {
     
     @Autowired
     private PurchaseOrderService purchaseOrderService;
+    
+    @Autowired
+    private InpatientAdmissionRepository admissionRepository;
 
     public DashboardController(UserService userService) {
         this.userService = userService;
@@ -239,5 +245,22 @@ public class DashboardController {
         }
         
         return "admin/profile";
+    }
+    
+    // Handle inpatient nursing instruction requests
+    @GetMapping("/inpatient/nursing-instructions/new")
+    public String newNursingInstruction(
+            @RequestParam Long admissionId,
+            Model model) {
+        
+        Optional<InpatientAdmission> admissionOpt = admissionRepository.findById(admissionId);
+        
+        if (admissionOpt.isEmpty()) {
+            return "redirect:/error";
+        }
+        
+        // For now, redirect back to admission details since we don't have a specific nursing instruction form
+        // In a real implementation, you would create a nursing instruction form template
+        return "redirect:/inpatient/admissions/" + admissionId;
     }
 }

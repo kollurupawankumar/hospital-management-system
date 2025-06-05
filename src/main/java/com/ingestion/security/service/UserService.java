@@ -42,6 +42,13 @@ public class UserService {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("User not found with username: " + username));
     }
+    
+    @Transactional(readOnly = true)
+    public List<User> getUsersByRole(User.UserRole role) {
+        return userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(role))
+                .toList();
+    }
 
     @Transactional
     public User registerNewUser(UserRegistrationDTO registrationDTO) {
