@@ -41,12 +41,12 @@
                 <div class="collapse navbar-collapse" id="navbarLab">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/dashboard') ? 'active' : ''}" href="/laboratory/dashboard">
+                            <a class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/dashboard') ? 'active' : ''}" href="/laboratory/dashboard">
                                 <i class="bi bi-speedometer2 me-1"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/orders') ? 'active' : ''}" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/orders') ? 'active' : ''}" href="#" id="ordersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-clipboard-check me-1"></i> Orders
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="ordersDropdown">
@@ -58,7 +58,7 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/samples') ? 'active' : ''}" href="#" id="samplesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/samples') ? 'active' : ''}" href="#" id="samplesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-droplet me-1"></i> Samples
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="samplesDropdown">
@@ -70,7 +70,7 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/results') ? 'active' : ''}" href="#" id="resultsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/results') ? 'active' : ''}" href="#" id="resultsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-file-earmark-text me-1"></i> Results
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="resultsDropdown">
@@ -84,7 +84,7 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/tests') ? 'active' : ''}" href="#" id="testsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/tests') ? 'active' : ''}" href="#" id="testsDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-list-check me-1"></i> Tests
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="testsDropdown">
@@ -95,7 +95,7 @@
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/analyzers') ? 'active' : ''}" href="#" id="analyzersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a class="nav-link dropdown-toggle" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/analyzers') ? 'active' : ''}" href="#" id="analyzersDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-cpu me-1"></i> Analyzers
                             </a>
                             <ul class="dropdown-menu" aria-labelledby="analyzersDropdown">
@@ -107,7 +107,7 @@
                             </ul>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" th:classappend="${#httpServletRequest.getRequestURI().contains('/laboratory/reports') ? 'active' : ''}" href="/laboratory/reports">
+                            <a class="nav-link" th:classappend="${#httpServletRequest != null and #httpServletRequest.getRequestURI().contains('/laboratory/reports') ? 'active' : ''}" href="/laboratory/reports">
                                 <i class="bi bi-bar-chart me-1"></i> Reports
                             </a>
                         </li>

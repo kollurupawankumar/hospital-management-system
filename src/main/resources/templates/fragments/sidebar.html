@@ -209,24 +209,7 @@
                 <!-- Laboratory -->
                 <li class="nav-item mb-2">
                     <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="labSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'lab'} ? 'true' : 'false'" aria-controls="labSubmenu"
-                       onclick="console.log('Laboratory header clicked!'); 
-                                var submenu = document.getElementById('labSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ LABORATORY COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ LABORATORY EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                       th:aria-expanded="${activeModule == 'lab'} ? 'true' : 'false'" aria-controls="labSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-flask"></i>
@@ -243,17 +226,17 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/orders'); return false;">
                                     <i class="fas fa-list-alt me-2"></i> Orders
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/results'); return false;">
                                     <i class="fas fa-vial me-2"></i> Results
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../lab/tests'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/laboratory/tests'); return false;">
                                     <i class="fas fa-microscope me-2"></i> Tests
                                 </a>
                             </li>
@@ -263,25 +246,8 @@
 
                 <!-- Pharmacy -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="pharmacySubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'pharmacy'} ? 'true' : 'false'" aria-controls="pharmacySubmenu"
-                       onclick="console.log('Pharmacy header clicked!'); 
-                                var submenu = document.getElementById('pharmacySubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ PHARMACY COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ PHARMACY EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="pharmacySubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'pharmacy'} ? 'true' : 'false'" aria-controls="pharmacySubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-pills"></i>
@@ -293,22 +259,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'pharmacy'} ? 'show' : ''" id="pharmacySubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/pharmacy/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/medicines'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/pharmacy/medicines'); return false;">
                                     <i class="fas fa-capsules me-2"></i> Medicines
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/prescriptions'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/pharmacy/prescriptions'); return false;">
                                     <i class="fas fa-prescription me-2"></i> Prescriptions
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../pharmacy/billing'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/pharmacy/billing'); return false;">
                                     <i class="fas fa-cash-register me-2"></i> Billing
                                 </a>
                             </li>
@@ -318,25 +284,8 @@
 
                 <!-- Inventory -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="inventorySubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'inventory'} ? 'true' : 'false'" aria-controls="inventorySubmenu"
-                       onclick="console.log('Inventory header clicked!'); 
-                                var submenu = document.getElementById('inventorySubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ INVENTORY COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ INVENTORY EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="inventorySubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'inventory'} ? 'true' : 'false'" aria-controls="inventorySubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-boxes"></i>
@@ -348,22 +297,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'inventory'} ? 'show' : ''" id="inventorySubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inventory/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/items'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inventory/items'); return false;">
                                     <i class="fas fa-box me-2"></i> Items
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/orders'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inventory/orders'); return false;">
                                     <i class="fas fa-shopping-cart me-2"></i> Orders
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('../inventory/suppliers'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inventory/suppliers'); return false;">
                                     <i class="fas fa-truck me-2"></i> Suppliers
                                 </a>
                             </li>
@@ -373,25 +322,8 @@
 
                 <!-- Inpatient Care -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="inpatientSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'inpatient'} ? 'true' : 'false'" aria-controls="inpatientSubmenu"
-                       onclick="console.log('Inpatient header clicked!'); 
-                                var submenu = document.getElementById('inpatientSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ INPATIENT COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ INPATIENT EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="inpatientSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'inpatient'} ? 'true' : 'false'" aria-controls="inpatientSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-bed"></i>
@@ -403,22 +335,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'inpatient'} ? 'show' : ''" id="inpatientSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/dashboard}" onclick="loadContent('../inpatient/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/dashboard}" onclick="loadContent('/hospital/inpatient/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/admissions}" onclick="loadContent('../inpatient/admissions'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/admissions}" onclick="loadContent('/hospital/inpatient/admissions'); return false;">
                                     <i class="fas fa-hospital-user me-2"></i> Admissions
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/wards}" onclick="loadContent('../inpatient/wards'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/wards}" onclick="loadContent('/hospital/inpatient/wards'); return false;">
                                     <i class="fas fa-building me-2"></i> Wards
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/beds}" onclick="loadContent('../inpatient/beds'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/beds}" onclick="loadContent('/hospital/inpatient/beds'); return false;">
                                     <i class="fas fa-bed me-2"></i> Beds
                                 </a>
                             </li>
@@ -428,25 +360,8 @@
 
                 <!-- Reception -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="receptionSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'reception'} ? 'true' : 'false'" aria-controls="receptionSubmenu"
-                       onclick="console.log('Reception header clicked!'); 
-                                var submenu = document.getElementById('receptionSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ RECEPTION COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ RECEPTION EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="receptionSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'reception'} ? 'true' : 'false'" aria-controls="receptionSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-desk"></i>
@@ -458,22 +373,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'reception'} ? 'show' : ''" id="receptionSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/dashboard}" onclick="loadContent('/reception/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/dashboard}" onclick="loadContent('/hospital/reception/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/registration}" onclick="loadContent('/reception/registration'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/registration}" onclick="loadContent('/hospital/reception/registration'); return false;">
                                     <i class="fas fa-user-plus me-2"></i> Registration
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/tokens}" onclick="loadContent('/reception/tokens'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/tokens}" onclick="loadContent('/hospital/reception/tokens'); return false;">
                                     <i class="fas fa-ticket-alt me-2"></i> Tokens
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/visitors}" onclick="loadContent('/reception/visitors'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/reception/visitors}" onclick="loadContent('/hospital/reception/visitors'); return false;">
                                     <i class="fas fa-users me-2"></i> Visitors
                                 </a>
                             </li>
@@ -483,25 +398,8 @@
 
                 <!-- Administration -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="adminSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'admin'} ? 'true' : 'false'" aria-controls="adminSubmenu"
-                       onclick="console.log('Administration header clicked!'); 
-                                var submenu = document.getElementById('adminSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ ADMINISTRATION COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ ADMINISTRATION EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="adminSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'admin'} ? 'true' : 'false'" aria-controls="adminSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-user-shield"></i>
@@ -518,17 +416,17 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/admin/users}" onclick="loadContent('/admin/users'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/users}" onclick="loadContent('/hospital/admin/users'); return false;">
                                     <i class="fas fa-users-cog me-2"></i> Users
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/admin/roles}" onclick="loadContent('/admin/roles'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/roles}" onclick="loadContent('/hospital/admin/roles'); return false;">
                                     <i class="fas fa-user-tag me-2"></i> Roles
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/admin/departments}" onclick="loadContent('/admin/departments'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/admin/departments}" onclick="loadContent('/hospital/admin/departments'); return false;">
                                     <i class="fas fa-sitemap me-2"></i> Departments
                                 </a>
                             </li>
@@ -538,25 +436,8 @@
 
                 <!-- System Settings -->
                 <li class="nav-item mb-2">
-                    <a class="nav-link sidebar-section-header" data-bs-toggle="collapse" href="javascript:void(0)" data-target="settingsSubmenu" role="button" 
-                       th:aria-expanded="${activeModule == 'settings'} ? 'true' : 'false'" aria-controls="settingsSubmenu"
-                       onclick="console.log('Settings header clicked!'); 
-                                var submenu = document.getElementById('settingsSubmenu'); 
-                                var arrow = this.querySelector('.sidebar-arrow');
-                                if (submenu) { 
-                                    if (submenu.style.display === 'block' || submenu.classList.contains('show')) { 
-                                        submenu.style.display = 'none'; 
-                                        submenu.classList.remove('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(0deg)';
-                                        console.log('✅ SETTINGS COLLAPSED'); 
-                                    } else { 
-                                        submenu.style.display = 'block'; 
-                                        submenu.classList.add('show'); 
-                                        if (arrow) arrow.style.transform = 'rotate(180deg)';
-                                        console.log('✅ SETTINGS EXPANDED'); 
-                                    } 
-                                } 
-                                return false;">
+                    <a class="nav-link sidebar-section-header" href="javascript:void(0)" data-target="settingsSubmenu" role="button" 
+                       th:aria-expanded="${activeModule == 'settings'} ? 'true' : 'false'" aria-controls="settingsSubmenu">
                         <div class="d-flex align-items-center">
                             <div class="sidebar-icon-container me-2">
                                 <i class="fas fa-cogs"></i>
@@ -568,22 +449,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'settings'} ? 'show' : ''" id="settingsSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/settings/general}" onclick="loadContent('/settings/general'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/general}" onclick="loadContent('/hospital/settings/general'); return false;">
                                     <i class="fas fa-cog me-2"></i> General
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/settings/backup}" onclick="loadContent('/settings/backup'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/backup}" onclick="loadContent('/hospital/settings/backup'); return false;">
                                     <i class="fas fa-database me-2"></i> Backup
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/settings/security}" onclick="loadContent('/settings/security'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/security}" onclick="loadContent('/hospital/settings/security'); return false;">
                                     <i class="fas fa-shield-alt me-2"></i> Security
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/settings/notifications}" onclick="loadContent('/settings/notifications'); return false;">
+                                <a class="nav-link sidebar-sublink" th:href="@{/settings/notifications}" onclick="loadContent('/hospital/settings/notifications'); return false;">
                                     <i class="fas fa-bell me-2"></i> Notifications
                                 </a>
                             </li>

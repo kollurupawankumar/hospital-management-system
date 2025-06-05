@@ -80,4 +80,29 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
+    
+    // Handle sidebar section toggles
+    document.querySelectorAll('.sidebar-section-header').forEach(function(header) {
+        header.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            var targetId = this.getAttribute('data-target');
+            var submenu = document.getElementById(targetId);
+            var arrow = this.querySelector('.sidebar-arrow');
+            
+            if (submenu) {
+                if (submenu.classList.contains('show')) {
+                    submenu.classList.remove('show');
+                    this.setAttribute('aria-expanded', 'false');
+                    if (arrow) arrow.style.transform = 'rotate(0deg)';
+                } else {
+                    submenu.classList.add('show');
+                    this.setAttribute('aria-expanded', 'true');
+                    if (arrow) arrow.style.transform = 'rotate(180deg)';
+                }
+            }
+            
+            return false;
+        });
+    });
 });
