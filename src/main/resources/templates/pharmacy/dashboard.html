@@ -1,0 +1,178 @@
+<div class="container-fluid py-4">
+    <style>
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stats-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+    </style>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-pills me-2"></i>Pharmacy Dashboard</h2>
+            <p class="text-muted">Overview of pharmacy operations and inventory</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="btn-group">
+                <a href="/hospital/pharmacy/medicines/new" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-1"></i> Add Medicine
+                </a>
+                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/hospital/pharmacy/prescriptions/new">New Prescription</a></li>
+                    <li><a class="dropdown-item" href="/hospital/pharmacy/billing/new">New Sale</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/hospital/pharmacy/reports">Generate Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <div class="stats-card bg-primary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.totalMedicines}">245</h3>
+                        <p class="mb-0">Total Medicines</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-capsules"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card bg-warning text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.lowStockMedicines}">12</h3>
+                        <p class="mb-0">Low Stock</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card bg-danger text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.expiredMedicines}">3</h3>
+                        <p class="mb-0">Expired</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-times"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="stats-card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.todaySales}">28</h3>
+                        <p class="mb-0">Today's Sales</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-cash-register"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <a href="/hospital/pharmacy/prescriptions" class="btn btn-outline-primary w-100">
+                <i class="fas fa-prescription me-2"></i>Pending Prescriptions
+                <span class="badge bg-primary ms-2" th:text="${stats.pendingPrescriptions}">5</span>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/pharmacy/medicines?filter=low-stock" class="btn btn-outline-warning w-100">
+                <i class="fas fa-exclamation-triangle me-2"></i>Low Stock Items
+                <span class="badge bg-warning ms-2" th:text="${stats.lowStockMedicines}">12</span>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/pharmacy/medicines?filter=expired" class="btn btn-outline-danger w-100">
+                <i class="fas fa-calendar-times me-2"></i>Expired Items
+                <span class="badge bg-danger ms-2" th:text="${stats.expiredMedicines}">3</span>
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/pharmacy/billing" class="btn btn-outline-success w-100">
+                <i class="fas fa-cash-register me-2"></i>Today's Sales
+                <span class="badge bg-success ms-2" th:text="${stats.todaySales}">28</span>
+            </a>
+        </div>
+    </div>
+    
+    <!-- Low Stock Items Table -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Low Stock Items</h5>
+                    <a href="/hospital/pharmacy/medicines?filter=low-stock" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(lowStockItems)}" class="text-center py-4">
+                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
+                        <p class="text-muted">All medicines are well stocked!</p>
+                    </div>
+                    
+                    <div th:if="${!#lists.isEmpty(lowStockItems)}" class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Medicine Name</th>
+                                    <th>Category</th>
+                                    <th>Current Stock</th>
+                                    <th>Minimum Stock</th>
+                                    <th>Unit</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="item : ${lowStockItems}">
+                                    <td>
+                                        <strong th:text="${item.itemName}">Paracetamol</strong>
+                                        <br>
+                                        <small class="text-muted" th:text="${item.itemCode}">MED001</small>
+                                    </td>
+                                    <td th:text="${item.category}">Analgesic</td>
+                                    <td>
+                                        <span class="badge bg-warning" th:text="${item.currentStock}">5</span>
+                                    </td>
+                                    <td th:text="${item.minimumStock}">20</td>
+                                    <td th:text="${item.unit}">Tablets</td>
+                                    <td>
+                                        <a th:href="@{/pharmacy/medicines/{id}/reorder(id=${item.id})}" class="btn btn-sm btn-outline-primary">
+                                            <i class="fas fa-shopping-cart"></i> Reorder
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

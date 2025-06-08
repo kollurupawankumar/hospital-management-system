@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Purchase Orders - Hospital Management System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                <i class="fas fa-shopping-cart me-2"></i>
+                                <span th:text="${pageTitle ?: 'Purchase Orders'}"></span>
+                            </h4>
+                            <a href="/hospital/inventory/orders/new" class="btn btn-primary">
+                                <i class="fas fa-plus me-1"></i>Create New Order
+                            </a>
+                        </div>
+                        
+                        <div class="card-body">
+                            <!-- Search and Filter Form -->
+                            <form method="get" class="mb-4">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <select class="form-select" name="status">
+                                            <option value="">All Status</option>
+                                            <option th:each="status : ${orderStatuses}" 
+                                                    th:value="${status}" 
+                                                    th:text="${status}"
+                                                    th:selected="${status.toString() == selectedStatus}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control" name="startDate" 
+                                               th:value="${startDate}" placeholder="Start Date">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="date" class="form-control" name="endDate" 
+                                               th:value="${endDate}" placeholder="End Date">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <button type="submit" class="btn btn-outline-primary w-100">
+                                            <i class="fas fa-search me-1"></i>Filter
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                            
+                            <!-- Quick Action Buttons -->
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="btn-group" role="group">
+                                        <a href="/hospital/inventory/orders" class="btn btn-outline-secondary">
+                                            <i class="fas fa-list me-1"></i>All Orders
+                                        </a>
+                                        <a href="/hospital/inventory/orders/pending" class="btn btn-outline-warning">
+                                            <i class="fas fa-clock me-1"></i>Pending
+                                        </a>
+                                        <a href="/hospital/inventory/orders/overdue" class="btn btn-outline-danger">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>Overdue
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Orders Table -->
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>PO Number</th>
+                                            <th>Supplier</th>
+                                            <th>Order Date</th>
+                                            <th>Expected Delivery</th>
+                                            <th>Total Amount</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr th:each="order : ${orders}">
+                                            <td>
+                                                <strong th:text="${order.poNumber}"></strong>
+                                            </td>
+                                            <td th:text="${order.supplier?.name ?: 'N/A'}"></td>
+                                            <td th:text="${#temporals.format(order.orderDate, 'dd/MM/yyyy')}"></td>
+                                            <td th:text="${order.expectedDeliveryDate != null ? #temporals.format(order.expectedDeliveryDate, 'dd/MM/yyyy') : 'N/A'}"></td>
+                                            <td th:text="${order.grandTotal != null ? '$' + order.grandTotal : '$0.00'}"></td>
+                                            <td>
+                                                <span th:switch="${order.status.toString()}">
+                                                    <span th:case="'DRAFT'" class="badge bg-secondary">Draft</span>
+                                                    <span th:case="'PENDING_APPROVAL'" class="badge bg-warning">Pending Approval</span>
+                                                    <span th:case="'APPROVED'" class="badge bg-info">Approved</span>
+                                                    <span th:case="'PLACED'" class="badge bg-primary">Placed</span>
+                                                    <span th:case="'PARTIALLY_RECEIVED'" class="badge bg-warning">Partially Received</span>
+                                                    <span th:case="'RECEIVED'" class="badge bg-success">Received</span>
+                                                    <span th:case="'CANCELLED'" class="badge bg-danger">Cancelled</span>
+                                                    <span th:case="'REJECTED'" class="badge bg-danger">Rejected</span>
+                                                    <span th:case="'CLOSED'" class="badge bg-dark">Closed</span>
+                                                    <span th:case="*" class="badge bg-light text-dark" th:text="${order.status}"></span>
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group" role="group">
+                                                    <a th:href="@{/inventory/orders/{id}(id=${order.id})}" 
+                                                       class="btn btn-sm btn-outline-info" title="View Details">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <a th:href="@{/inventory/orders/{id}/edit(id=${order.id})}" 
+                                                       class="btn btn-sm btn-outline-warning" title="Edit"
+                                                       th:if="${order.status.toString() == 'DRAFT'}">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <button class="btn btn-sm btn-outline-success" title="Print"
+                                                            th:onclick="'printOrder(' + ${order.id} + ')'">
+                                                        <i class="fas fa-print"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr th:if="${#lists.isEmpty(orders)}">
+                                            <td colspan="7" class="text-center text-muted">
+                                                <i class="fas fa-shopping-cart fa-3x mb-3 d-block"></i>
+                                                No purchase orders found
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function printOrder(orderId) {
+            // Implement print functionality
+            window.open('/hospital/inventory/orders/' + orderId + '/print', '_blank');
+        }
+    </script>
+</body>
+</html>

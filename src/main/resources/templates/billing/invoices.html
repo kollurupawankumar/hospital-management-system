@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Management</title>
+</head>
+<body>
+    <div class="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-file-invoice me-2"></i>Invoice Management</h2>
+            <div>
+                <button class="btn btn-outline-secondary me-2" onclick="loadContent('/hospital/billing/dashboard')">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </button>
+                <button class="btn btn-primary" onclick="loadContent('/hospital/billing/invoices/new')">
+                    <i class="fas fa-plus me-2"></i>Create Invoice
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form class="row g-3" onsubmit="filterInvoices(); return false;">
+                    <div class="col-md-3">
+                        <label for="statusFilter" class="form-label">Status</label>
+                        <select class="form-select" id="statusFilter" th:value="${status}">
+                            <option value="">All Statuses</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="PAID">Paid</option>
+                            <option value="OVERDUE">Overdue</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="patientFilter" class="form-label">Patient Name</label>
+                        <input type="text" class="form-control" id="patientFilter" 
+                               placeholder="Search by patient name" th:value="${patientName}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dateFilter" class="form-label">Date Range</label>
+                        <input type="date" class="form-control" id="dateFilter">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Invoices Table -->
+        <div class="card">
+            <div class="card-body">
+                <div th:if="${invoices != null and invoices.content != null and !invoices.content.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Invoice #</th>
+                                    <th>Patient</th>
+                                    <th>Date</th>
+                                    <th>Due Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="invoice : ${invoices.content}">
+                                    <td th:text="${invoice.invoiceNumber}">INV-001</td>
+                                    <td th:text="${invoice.patient != null ? invoice.patient.firstName + ' ' + invoice.patient.lastName : 'N/A'}">Patient Name</td>
+                                    <td th:text="${#temporals.format(invoice.invoiceDate, 'MMM dd, yyyy')}">Date</td>
+                                    <td th:text="${#temporals.format(invoice.dueDate, 'MMM dd, yyyy')}">Due Date</td>
+                                    <td th:text="'$' + ${invoice.totalAmount}">$100.00</td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${invoice.status == 'PAID'} ? 'bg-success' : 
+                                                             (${invoice.status == 'PENDING'} ? 'bg-warning' : 
+                                                             (${invoice.status == 'OVERDUE'} ? 'bg-danger' : 'bg-secondary'))"
+                                              th:text="${invoice.status}">Status</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    th:onclick="'loadContent(\'/hospital/billing/invoices/' + ${invoice.id} + '\')'">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-warning" 
+                                                    th:onclick="'loadContent(\'/hospital/billing/invoices/' + ${invoice.id} + '/edit\')'">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-success" 
+                                                    th:if="${invoice.status == 'PENDING'}"
+                                                    th:onclick="'markAsPaid(' + ${invoice.id} + ')'">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${currentPage - 1} + ')'">Previous</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                                th:classappend="${i == currentPage} ? 'active'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${i} + ')'" th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${currentPage + 1} + ')'">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div th:if="${invoices == null or invoices.content == null or invoices.content.empty}" class="text-center text-muted py-5">
+                    <i class="fas fa-file-invoice fa-3x mb-3"></i>
+                    <p>No invoices found</p>
+                    <button class="btn btn-primary" onclick="loadContent('/hospital/billing/invoices/new')">
+                        <i class="fas fa-plus me-2"></i>Create First Invoice
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterInvoices() {
+            const status = document.getElementById('statusFilter').value;
+            const patientName = document.getElementById('patientFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            
+            let url = '/hospital/billing/invoices?';
+            if (status) url += 'status=' + status + '&';
+            if (patientName) url += 'patientName=' + patientName + '&';
+            if (date) url += 'date=' + date + '&';
+            
+            loadContent(url);
+        }
+
+        function loadPage(page) {
+            const status = document.getElementById('statusFilter').value;
+            const patientName = document.getElementById('patientFilter').value;
+            
+            let url = '/hospital/billing/invoices?page=' + page;
+            if (status) url += '&status=' + status;
+            if (patientName) url += '&patientName=' + patientName;
+            
+            loadContent(url);
+        }
+
+        function markAsPaid(invoiceId) {
+            if (confirm('Mark this invoice as paid?')) {
+                fetch('/hospital/billing/invoices/' + invoiceId + '/pay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === 'success') {
+                        loadContent('/hospital/billing/invoices');
+                    } else {
+                        alert('Error updating invoice');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error updating invoice');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Management</title>
+</head>
+<body>
+    <div class="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-credit-card me-2"></i>Payment Management</h2>
+            <div>
+                <button class="btn btn-outline-secondary me-2" onclick="loadContent('/hospital/billing/dashboard')">
+                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                </button>
+                <button class="btn btn-primary" onclick="loadContent('/hospital/billing/payments/new')">
+                    <i class="fas fa-plus me-2"></i>Record Payment
+                </button>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <form class="row g-3" onsubmit="filterPayments(); return false;">
+                    <div class="col-md-3">
+                        <label for="methodFilter" class="form-label">Payment Method</label>
+                        <select class="form-select" id="methodFilter" th:value="${method}">
+                            <option value="">All Methods</option>
+                            <option value="CASH">Cash</option>
+                            <option value="CREDIT_CARD">Credit Card</option>
+                            <option value="DEBIT_CARD">Debit Card</option>
+                            <option value="BANK_TRANSFER">Bank Transfer</option>
+                            <option value="CHECK">Check</option>
+                            <option value="INSURANCE">Insurance</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="dateFilter" class="form-label">Payment Date</label>
+                        <input type="date" class="form-control" id="dateFilter" th:value="${date}">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="amountFilter" class="form-label">Amount Range</label>
+                        <select class="form-select" id="amountFilter">
+                            <option value="">All Amounts</option>
+                            <option value="0-100">$0 - $100</option>
+                            <option value="100-500">$100 - $500</option>
+                            <option value="500-1000">$500 - $1000</option>
+                            <option value="1000+">$1000+</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">&nbsp;</label>
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search me-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div class="card">
+            <div class="card-body">
+                <div th:if="${payments != null and payments.content != null and !payments.content.empty}">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Invoice #</th>
+                                    <th>Patient</th>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Method</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="payment : ${payments.content}">
+                                    <td th:text="${payment.id}">PAY-001</td>
+                                    <td th:text="${payment.invoice != null ? payment.invoice.invoiceNumber : 'N/A'}">INV-001</td>
+                                    <td th:text="${payment.invoice != null and payment.invoice.patient != null ? 
+                                                  payment.invoice.patient.firstName + ' ' + payment.invoice.patient.lastName : 'N/A'}">Patient Name</td>
+                                    <td th:text="${#temporals.format(payment.paymentDate, 'MMM dd, yyyy')}">Date</td>
+                                    <td th:text="'$' + ${payment.amount}">$100.00</td>
+                                    <td>
+                                        <span class="badge bg-secondary" th:text="${payment.paymentMethod}">Cash</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge" 
+                                              th:classappend="${payment.status == 'COMPLETED'} ? 'bg-success' : 
+                                                             (${payment.status == 'PENDING'} ? 'bg-warning' : 'bg-danger')"
+                                              th:text="${payment.status}">Status</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    th:onclick="'loadContent(\'/hospital/billing/payments/' + ${payment.id} + '\')'">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-info" 
+                                                    th:onclick="'printReceipt(' + ${payment.id} + ')'">
+                                                <i class="fas fa-print"></i>
+                                            </button>
+                                            <button type="button" class="btn btn-sm btn-outline-danger" 
+                                                    th:if="${payment.status == 'PENDING'}"
+                                                    th:onclick="'refundPayment(' + ${payment.id} + ')'">
+                                                <i class="fas fa-undo"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav th:if="${totalPages > 1}">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${currentPage - 1} + ')'">Previous</a>
+                            </li>
+                            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages - 1)}" 
+                                th:classappend="${i == currentPage} ? 'active'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${i} + ')'" th:text="${i + 1}">1</a>
+                            </li>
+                            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                                <a class="page-link" href="#" th:onclick="'loadPage(' + ${currentPage + 1} + ')'">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
+                <div th:if="${payments == null or payments.content == null or payments.content.empty}" class="text-center text-muted py-5">
+                    <i class="fas fa-credit-card fa-3x mb-3"></i>
+                    <p>No payments found</p>
+                    <button class="btn btn-primary" onclick="loadContent('/hospital/billing/payments/new')">
+                        <i class="fas fa-plus me-2"></i>Record First Payment
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function filterPayments() {
+            const method = document.getElementById('methodFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            const amount = document.getElementById('amountFilter').value;
+            
+            let url = '/hospital/billing/payments?';
+            if (method) url += 'method=' + method + '&';
+            if (date) url += 'date=' + date + '&';
+            if (amount) url += 'amount=' + amount + '&';
+            
+            loadContent(url);
+        }
+
+        function loadPage(page) {
+            const method = document.getElementById('methodFilter').value;
+            const date = document.getElementById('dateFilter').value;
+            
+            let url = '/hospital/billing/payments?page=' + page;
+            if (method) url += '&method=' + method;
+            if (date) url += '&date=' + date;
+            
+            loadContent(url);
+        }
+
+        function printReceipt(paymentId) {
+            window.open('/hospital/billing/payments/' + paymentId + '/receipt', '_blank');
+        }
+
+        function refundPayment(paymentId) {
+            if (confirm('Are you sure you want to refund this payment?')) {
+                fetch('/hospital/billing/payments/' + paymentId + '/refund', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.text())
+                .then(result => {
+                    if (result === 'success') {
+                        loadContent('/hospital/billing/payments');
+                    } else {
+                        alert('Error processing refund');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error processing refund');
+                });
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<div class="container-fluid py-4">
+    <style>
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stats-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+    </style>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-bed me-2"></i>Inpatient Care Dashboard</h2>
+            <p class="text-muted">Overview of inpatient admissions and bed management</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="btn-group">
+                <a href="/hospital/inpatient/admissions/new" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-1"></i> New Admission
+                </a>
+                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/hospital/inpatient/beds/new">Add Bed</a></li>
+                    <li><a class="dropdown-item" href="/hospital/inpatient/wards/new">Add Ward</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/hospital/inpatient/reports">Generate Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="stats-card bg-primary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.totalAdmissions}">156</h3>
+                        <p class="mb-0">Total Admissions</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-hospital-user"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.activeAdmissions}">89</h3>
+                        <p class="mb-0">Active</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-info text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.totalBeds}">120</h3>
+                        <p class="mb-0">Total Beds</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-bed"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-warning text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.occupiedBeds}">89</h3>
+                        <p class="mb-0">Occupied</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.availableBeds}">31</h3>
+                        <p class="mb-0">Available</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-dark text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.occupancyRate}">74%</h3>
+                        <p class="mb-0">Occupancy</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <a href="/hospital/inpatient/admissions" class="btn btn-outline-primary w-100">
+                <i class="fas fa-hospital-user me-2"></i>View All Admissions
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/inpatient/beds" class="btn btn-outline-info w-100">
+                <i class="fas fa-bed me-2"></i>Bed Management
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/inpatient/wards" class="btn btn-outline-success w-100">
+                <i class="fas fa-building me-2"></i>Ward Management
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/inpatient/discharge" class="btn btn-outline-warning w-100">
+                <i class="fas fa-sign-out-alt me-2"></i>Discharge Patients
+            </a>
+        </div>
+    </div>
+    
+    <!-- Recent Admissions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Recent Admissions</h5>
+                    <a href="/hospital/inpatient/admissions" class="btn btn-sm btn-outline-primary">View All</a>
+                </div>
+                <div class="card-body">
+                    <div th:if="${#lists.isEmpty(recentAdmissions)}" class="text-center py-4">
+                        <i class="fas fa-hospital-user fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">No recent admissions found</p>
+                    </div>
+                    
+                    <div th:if="${!#lists.isEmpty(recentAdmissions)}" class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Ward</th>
+                                    <th>Bed</th>
+                                    <th>Admission Date</th>
+                                    <th>Doctor</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="admission : ${recentAdmissions}">
+                                    <td>
+                                        <div th:if="${admission.patient}">
+                                            <strong th:text="${admission.patient.firstName + ' ' + admission.patient.lastName}">John Doe</strong>
+                                            <br>
+                                            <small class="text-muted" th:text="'ID: ' + ${admission.patient.id}">ID: 12345</small>
+                                        </div>
+                                        <span th:unless="${admission.patient}" class="text-muted">N/A</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${admission.ward}" th:text="${admission.ward.wardName}">ICU</span>
+                                        <span th:unless="${admission.ward}" class="text-muted">N/A</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${admission.bed}" th:text="${admission.bed.bedNumber}">101</span>
+                                        <span th:unless="${admission.bed}" class="text-muted">N/A</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${admission.admissionDate}" th:text="${#temporals.format(admission.admissionDate, 'dd/MM/yyyy')}">01/01/2024</span>
+                                        <span th:unless="${admission.admissionDate}" class="text-muted">N/A</span>
+                                    </td>
+                                    <td>
+                                        <span th:if="${admission.doctor}" th:text="${admission.doctor.firstName + ' ' + admission.doctor.lastName}">Dr. Smith</span>
+                                        <span th:unless="${admission.doctor}" class="text-muted">N/A</span>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-success">Active</span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-sm btn-outline-primary" 
+                                                    th:onclick="'viewAdmission(' + ${admission.id} + ')'">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function viewAdmission(admissionId) {
+            console.log('View admission:', admissionId);
+            alert('View admission functionality to be implemented');
+        }
+    </script>
+</div>

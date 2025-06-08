@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${item.id != null ? 'Edit Item' : 'Add New Item'} + ' - Hospital Management System'"></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+    
+    <div class="main-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h4 class="mb-0">
+                                <i class="fas fa-box me-2"></i>
+                                <span th:text="${item.id != null ? 'Edit Item' : 'Add New Item'}"></span>
+                            </h4>
+                        </div>
+                        
+                        <div class="card-body">
+                            <form th:action="${item.id != null ? '/hospital/inventory/items/' + item.id + '/edit' : '/hospital/inventory/items/new'}" 
+                                  th:object="${item}" method="post">
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="name" class="form-label">Item Name *</label>
+                                            <input type="text" class="form-control" id="name" th:field="*{name}" required>
+                                            <div th:if="${#fields.hasErrors('name')}" class="text-danger" th:errors="*{name}"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="itemCode" class="form-label">Item Code</label>
+                                            <input type="text" class="form-control" id="itemCode" th:field="*{itemCode}">
+                                            <div th:if="${#fields.hasErrors('itemCode')}" class="text-danger" th:errors="*{itemCode}"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3">
+                                            <label for="description" class="form-label">Description</label>
+                                            <textarea class="form-control" id="description" th:field="*{description}" rows="3"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="itemType" class="form-label">Item Type *</label>
+                                            <select class="form-select" id="itemType" th:field="*{itemType}" required>
+                                                <option value="">Select Type</option>
+                                                <option th:each="type : ${itemTypes}" 
+                                                        th:value="${type}" 
+                                                        th:text="${type}"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="unitOfMeasure" class="form-label">Unit of Measure *</label>
+                                            <input type="text" class="form-control" id="unitOfMeasure" th:field="*{unitOfMeasure}" 
+                                                   placeholder="e.g., pieces, kg, liters" required>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="barcode" class="form-label">Barcode</label>
+                                            <input type="text" class="form-control" id="barcode" th:field="*{barcode}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="purchasePrice" class="form-label">Purchase Price</label>
+                                            <input type="number" step="0.01" class="form-control" id="purchasePrice" th:field="*{purchasePrice}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="sellingPrice" class="form-label">Selling Price</label>
+                                            <input type="number" step="0.01" class="form-control" id="sellingPrice" th:field="*{sellingPrice}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="reorderLevel" class="form-label">Reorder Level</label>
+                                            <input type="number" class="form-control" id="reorderLevel" th:field="*{reorderLevel}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="minimumStock" class="form-label">Minimum Stock</label>
+                                            <input type="number" class="form-control" id="minimumStock" th:field="*{minimumStock}">
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="maximumStock" class="form-label">Maximum Stock</label>
+                                            <input type="number" class="form-control" id="maximumStock" th:field="*{maximumStock}">
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="mb-3 form-check">
+                                            <input type="checkbox" class="form-check-input" id="isActive" th:field="*{isActive}">
+                                            <label class="form-check-label" for="isActive">Active</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="d-flex justify-content-between">
+                                    <a href="/hospital/inventory/items" class="btn btn-secondary">
+                                        <i class="fas fa-arrow-left me-1"></i>Back to List
+                                    </a>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-1"></i>
+                                        <span th:text="${item.id != null ? 'Update Item' : 'Create Item'}"></span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

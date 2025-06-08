@@ -335,22 +335,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'inpatient'} ? 'show' : ''" id="inpatientSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/dashboard}" onclick="loadContent('/hospital/inpatient/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inpatient/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/admissions}" onclick="loadContent('/hospital/inpatient/admissions'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inpatient/admissions'); return false;">
                                     <i class="fas fa-hospital-user me-2"></i> Admissions
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/wards}" onclick="loadContent('/hospital/inpatient/wards'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inpatient/wards'); return false;">
                                     <i class="fas fa-building me-2"></i> Wards
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/inpatient/beds}" onclick="loadContent('/hospital/inpatient/beds'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/inpatient/beds'); return false;">
                                     <i class="fas fa-bed me-2"></i> Beds
                                 </a>
                             </li>
@@ -373,22 +373,22 @@
                     <div class="collapse" th:classappend="${activeModule == 'reception'} ? 'show' : ''" id="receptionSubmenu">
                         <ul class="nav flex-column sidebar-submenu">
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/dashboard}" onclick="loadContent('/hospital/reception/dashboard'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/reception/dashboard'); return false;">
                                     <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/registration}" onclick="loadContent('/hospital/reception/registration'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/reception/registration'); return false;">
                                     <i class="fas fa-user-plus me-2"></i> Registration
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/tokens}" onclick="loadContent('/hospital/reception/tokens'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/reception/tokens'); return false;">
                                     <i class="fas fa-ticket-alt me-2"></i> Tokens
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link sidebar-sublink" th:href="@{/reception/visitors}" onclick="loadContent('/hospital/reception/visitors'); return false;">
+                                <a class="nav-link sidebar-sublink" href="#" onclick="event.preventDefault(); loadContent('/hospital/reception/visitors'); return false;">
                                     <i class="fas fa-users me-2"></i> Visitors
                                 </a>
                             </li>

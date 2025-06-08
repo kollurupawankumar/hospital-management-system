@@ -1,0 +1,177 @@
+<div class="container-fluid py-4">
+    <style>
+        .stats-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .stats-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        .stats-icon {
+            font-size: 2rem;
+            opacity: 0.8;
+        }
+    </style>
+
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-desk me-2"></i>Reception Dashboard</h2>
+            <p class="text-muted">Overview of reception activities and patient flow</p>
+        </div>
+        <div class="col-md-4 text-md-end">
+            <div class="btn-group">
+                <a href="/hospital/reception/registration/new" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-1"></i> New Registration
+                </a>
+                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown">
+                    <span class="visually-hidden">Toggle Dropdown</span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="/hospital/reception/tokens/new">Issue Token</a></li>
+                    <li><a class="dropdown-item" href="/hospital/reception/visitors/new">Register Visitor</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" href="/hospital/reception/reports">Generate Reports</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Row -->
+    <div class="row mb-4">
+        <div class="col-md-2">
+            <div class="stats-card bg-primary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.todayRegistrations}">25</h3>
+                        <p class="mb-0">Today's Registrations</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-warning text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.pendingTokens}">12</h3>
+                        <p class="mb-0">Pending Tokens</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-ticket-alt"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-info text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.activeVisitors}">8</h3>
+                        <p class="mb-0">Active Visitors</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-success text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.totalAppointments}">45</h3>
+                        <p class="mb-0">Appointments</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-dark text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.checkedInPatients}">32</h3>
+                        <p class="mb-0">Checked In</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="stats-card bg-secondary text-white p-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h3 class="mb-0" th:text="${stats.waitingPatients}">13</h3>
+                        <p class="mb-0">Waiting</p>
+                    </div>
+                    <div class="stats-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col-md-3">
+            <a href="/hospital/reception/registration" class="btn btn-outline-primary w-100">
+                <i class="fas fa-user-plus me-2"></i>Patient Registration
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/reception/tokens" class="btn btn-outline-warning w-100">
+                <i class="fas fa-ticket-alt me-2"></i>Token Management
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/reception/visitors" class="btn btn-outline-info w-100">
+                <i class="fas fa-users me-2"></i>Visitor Management
+            </a>
+        </div>
+        <div class="col-md-3">
+            <a href="/hospital/appointments" class="btn btn-outline-success w-100">
+                <i class="fas fa-calendar-check me-2"></i>Appointments
+            </a>
+        </div>
+    </div>
+    
+    <!-- Today's Activity -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Today's Registrations</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <i class="fas fa-user-plus fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Recent registrations will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Pending Tokens</h5>
+                </div>
+                <div class="card-body">
+                    <div class="text-center py-4">
+                        <i class="fas fa-ticket-alt fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">Pending tokens will appear here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
